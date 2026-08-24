@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bn1agigeowt15"
+
+[deps]
+
+files=["res://docs/TRANSLATION_INVENTORY.locale.translation", "res://docs/TRANSLATION_INVENTORY.display.translation", "res://docs/TRANSLATION_INVENTORY.content.translation", "res://docs/TRANSLATION_INVENTORY.entry.translation"]
+
+source_file="res://docs/TRANSLATION_INVENTORY.csv"
+dest_files=["res://docs/TRANSLATION_INVENTORY.locale.translation", "res://docs/TRANSLATION_INVENTORY.display.translation", "res://docs/TRANSLATION_INVENTORY.content.translation", "res://docs/TRANSLATION_INVENTORY.entry.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

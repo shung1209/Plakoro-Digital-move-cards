@@ -1,0 +1,9 @@
+﻿file,locale,display_name,content_domain,entry_count
+en_US.json,en_US,English Game Content,,342
+es_ES.json,es_ES,Contenido del juego en español (España),,22
+es_ES_moves.json,es_ES,Español (España),,342
+ja_JP.json,ja_JP,日本語ゲームコンテンツ,,332
+ja_JP_core.json,ja_JP,日本語ゲームコンテンツ,,22
+ja_JP_moves.json,ja_JP,日本語ムーブコンテンツ,moves,545
+zh_TW.json,zh_TW,繁體中文遊戲內容,,22
+zh_TW_moves.json,zh_TW,繁體中文 Move 名稱與解釋,moves,545
