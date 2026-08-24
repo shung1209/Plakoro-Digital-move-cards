@@ -371,7 +371,7 @@ func _rebuild_move_choices() -> void:
 		if not move_docs.has(move_id): continue
 		var move_doc: Dictionary = move_docs[move_id]
 		var card := VBoxContainer.new(); card.custom_minimum_size = Vector2(330,128); card.size_flags_horizontal = Control.SIZE_EXPAND_FILL; card.add_theme_constant_override("separation",5); moves_grid.add_child(card)
-		var check := CheckButton.new(); check.text = _move_name(move_doc); check.add_theme_font_size_override("font_size",18); check.toggled.connect(_on_move_toggled.bind(move_id)); card.add_child(check); move_checkboxes[move_id] = check
+		var check := CheckButton.new(); check.text = _move_name(move_doc); check.icon = _energy_texture(String(move_doc.get("attack_type","normal"))); check.expand_icon = true; check.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT; check.add_theme_constant_override("icon_max_width",28); check.tooltip_text = _type_name(String(move_doc.get("attack_type","normal"))); check.add_theme_font_size_override("font_size",18); check.toggled.connect(_on_move_toggled.bind(move_id)); card.add_child(check); move_checkboxes[move_id] = check
 		var summary_row := HBoxContainer.new(); summary_row.add_theme_constant_override("separation", 8); card.add_child(summary_row)
 		_add_energy_cost_icons(summary_row, move_doc, 24)
 		var damage_label := Label.new(); damage_label.text = "  •  %s" % _damage_text(move_doc); damage_label.modulate = Color(0.75,0.8,0.88); summary_row.add_child(damage_label)
@@ -1049,8 +1049,13 @@ func _orientation_suffix(reminder: Dictionary) -> String:
 
 func _energy_icon(type_id: String, size: int) -> TextureRect:
 	var icon := TextureRect.new(); icon.custom_minimum_size = Vector2(size,size); icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED; icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var path := "%s/%s.webp" % [ENERGY_ICON_DIR,type_id]; if ResourceLoader.exists(path): icon.texture = load(path)
+	icon.texture = _energy_texture(type_id)
 	icon.tooltip_text = _type_name(type_id); return icon
+
+func _energy_texture(type_id: String) -> Texture2D:
+	var path := "%s/%s.webp" % [ENERGY_ICON_DIR,type_id]
+	if ResourceLoader.exists(path): return load(path) as Texture2D
+	return null
 
 func _add_energy_cost_icons(row: HBoxContainer, move_doc: Dictionary, size: int) -> void:
 	var costs: Array = move_doc.get("energy_cost",[]) as Array
