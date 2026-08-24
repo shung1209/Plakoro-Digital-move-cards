@@ -215,16 +215,38 @@ func _move_name(doc: Dictionary) -> String:
 
 func _move_description(doc: Dictionary) -> String:
 	var card_id := String(doc.get("id", ""))
-	var card_text := _tr_content("move_card.%s.description" % card_id, "")
-	if not card_text.is_empty(): return _localize_orientation_tokens(card_text)
+	var move_name_id := String(doc.get("move_name_id", ""))
+	var card_key := "move_card.%s.description" % card_id
+	var move_key := "move.%s.description" % move_name_id
+	# Prefer any translation in the selected locale before consulting English.
+	# Otherwise an English card-specific entry can hide an available localized
+	# generic move description.
+	if locale_entries.has(card_key):
+		return _localize_orientation_tokens(String(locale_entries[card_key]).replace("\\n", "\n"))
+	if locale_entries.has(move_key):
+		return _localize_orientation_tokens(String(locale_entries[move_key]).replace("\\n", "\n"))
+	if fallback_entries.has(card_key):
+		return _localize_orientation_tokens(String(fallback_entries[card_key]).replace("\\n", "\n"))
+	if fallback_entries.has(move_key):
+		return _localize_orientation_tokens(String(fallback_entries[move_key]).replace("\\n", "\n"))
 	var source: Dictionary = doc.get("source", {}) as Dictionary
-	return _localize_orientation_tokens(_tr_content("move.%s.description" % String(doc.get("move_name_id", "")), String(source.get("raw_text", ""))))
+	return _localize_orientation_tokens(String(source.get("raw_text", "")))
 
 func _move_effect_text(move_id: String, move_doc: Dictionary) -> String:
 	var source: Dictionary = move_doc.get("source", {}) as Dictionary
 	var source_move_effects: Array = source.get("move_effect_text", []) as Array
 	if source_move_effects.is_empty():
 		return ""
+	var card_key := "move_card.%s.move_effect" % move_id
+	var move_key := "move.%s.move_effect" % String(move_doc.get("move_name_id", ""))
+	if locale_entries.has(card_key):
+		return _without_move_effect_heading(String(locale_entries[card_key]).replace("\\n", "\n"))
+	if locale_entries.has(move_key):
+		return _without_move_effect_heading(String(locale_entries[move_key]).replace("\\n", "\n"))
+	if fallback_entries.has(card_key):
+		return _without_move_effect_heading(String(fallback_entries[card_key]).replace("\\n", "\n"))
+	if fallback_entries.has(move_key):
+		return _without_move_effect_heading(String(fallback_entries[move_key]).replace("\\n", "\n"))
 	var description := _move_description(move_doc)
 	var outcome_texts: Array[String] = []
 	var outcomes: Array = move_doc.get("outcome_rules", []) as Array
