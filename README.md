@@ -94,3 +94,102 @@ Web     → web/index.html
 ## 專案定位
 
 這是一個 tabletop companion，而不是第二套自動戰鬥引擎。所有涉及實體桌面狀態的傷害、回復、弱點、防禦與特殊規則，應由玩家依實體遊戲結果判斷；數位工具的責任是讓招式卡更易讀、減少日文閱讀障礙，並避免玩家忘記跨回合效果。
+
+---
+
+# English Manual
+
+Plakoro Digital Move Cards is a digital move-card viewer and turn companion for the physical Plakoro tabletop game. It reuses the Pokémon, move-card, localization, and original image data from the Plakoro project, allowing players to select moves, read translated cards, and track turn effects on Windows, Linux, or the Web.
+
+This application does not replace the physical dice or tabletop rulings, and it does not calculate an entire battle automatically. Players still roll Enekoro and Charakoro together on the physical table. The application presents the cards, records move usage, and reminds players about special effects.
+
+## Key features
+
+- Select exactly four move cards from a Pokémon's available move pool.
+- Physical A/B card variants of the same species are merged into one Pokémon option, while their move pools are combined.
+- Uses the original Plakoro move-card background, type icons, Enekoro icons, and Charakoro face icons.
+- Move cards can be opened in a larger view, cancelled, or confirmed for use.
+- Enekoro and Charakoro are rolled together. The Enekoro requirement is checked first; only a successful move can trigger the Charakoro effect from the same roll.
+- If the Enekoro result is insufficient, the move fails and its Charakoro effect is ignored.
+- A move used during the previous player turn is locked for the next player turn.
+- Special effects are recorded and shown as reminders during the relevant player or opponent turn.
+- HP is adjusted manually with `−10` and `+10`. The application does not automatically apply damage, healing, recoil, or Weakness bonuses.
+- Pokémon information includes HP, a type icon, a Weakness icon, and the Weakness damage bonus.
+- Supports English, Spanish, Japanese, and Traditional Chinese. Changing the language updates the interface, Pokémon names, move names, and effect text.
+- Bundles Noto Sans JP and Noto Sans TC to prevent missing CJK glyphs in Web exports.
+- Supports responsive layouts from 16:9 through 21:9, automatically adjusting the number of columns to the viewport.
+
+## How to use
+
+### 1. Create a tabletop loadout
+
+1. Select one Pokémon from the list on the left.
+2. Review its HP, type, and Weakness.
+3. Select four move cards from the move pool on the right.
+4. Each summary shows its Enekoro requirement, damage, Charakoro trigger-face icons, and the corresponding effects.
+5. After selecting four cards, press **Start Tabletop Session**.
+
+### 2. Player turn
+
+1. Select an unlocked move card.
+2. Review the enlarged card and press **Use Move**.
+3. Roll Enekoro and Charakoro together on the physical table.
+4. If the Enekoro result is insufficient, choose the move-failed option.
+5. If the Enekoro result succeeds, select the Charakoro face produced by the same roll.
+6. The application records only the effect matching that face, then advances to the opponent turn.
+
+### 3. Opponent turn
+
+1. Resolve the opponent's move and effects on the physical table.
+2. Use `−10` or `+10` to synchronize the Pokémon's HP when necessary.
+3. Review any active turn-effect reminders.
+4. Press **Opponent Turn Finished** to begin the next player turn.
+
+### 4. Optional information and ending a game
+
+- The play screen keeps the move cards as its primary visual focus.
+- Use **Show info / Hide info** to toggle Pokémon details, HP, Weakness, and the most recent dice result.
+- **End Game** returns to the Pokémon and four-card selection screen.
+
+## Responsive layout
+
+- Around 1280×720: two columns on the selection screen and a 2×2 move-card layout during play.
+- At 1600 px and above: three columns on the selection screen.
+- At 1500 px and above, with sufficient height: all four play cards appear in one row.
+- At 2400 px and above: four columns on the selection screen to make use of 21:9 displays.
+- Narrower viewports fall back to one or two columns. Pages and lists remain vertically scrollable so controls are not clipped.
+- Crossing a layout breakpoint triggers automatic reflow without clearing the selected moves.
+
+## Data and localization
+
+```text
+database/pokemon/        Pokémon data
+database/move_cards/     Move-card and Charakoro outcome data
+language/content/        Pokémon, move, and card-effect translations
+assets/pokemon/images/   Pokémon images
+assets/move_cards/       Move-card background
+assets/ui/energy/        Type and Enekoro icons
+assets/ui/kyokoro/       Charakoro face icons
+assets/fonts/            Noto Sans fonts and licenses
+```
+
+Localization lookup prioritizes card-specific `move_card.<card_id>` entries and then falls back to shared `move.<move_name_id>` entries. This supports moves that share a name but have different card effects.
+
+## Running and exporting
+
+1. Open `project.godot` in Godot 4.7 or a compatible Godot 4.x release.
+2. Run the main scene at `scenes/Main.tscn`.
+3. Install export templates matching the Godot version in use.
+4. Export with the included presets:
+
+```text
+Windows → build/windows/Plakoro_Digital_Move_Cards.exe
+Linux   → build/linux/Plakoro_Digital_Move_Cards.x86_64
+Web     → web/index.html
+```
+
+The generated `build/` and `web/` directories and the local Godot cache at `.godot/` are excluded from Git.
+
+## Project scope
+
+This is a tabletop companion, not a second automated battle engine. Damage, healing, Weakness, defense, and special rules that depend on the physical tabletop state should be resolved by the players. The digital application's role is to make move cards easier to read, reduce the Japanese-language barrier, and help players remember effects that continue across turns.
