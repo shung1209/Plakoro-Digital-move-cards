@@ -234,14 +234,20 @@ func _build_shell() -> void:
 	viewport_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	viewport_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	viewport_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_configure_touch_scrollbar(viewport_scroll)
 	root_margin.add_child(viewport_scroll)
+	var page_padding := MarginContainer.new()
+	page_padding.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	page_padding.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	page_padding.add_theme_constant_override("margin_right",14)
+	viewport_scroll.add_child(page_padding)
 	page = VBoxContainer.new()
 	page.name = "Page"
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	page.custom_minimum_size.y = maxf(0.0, get_viewport_rect().size.y - 28.0)
 	page.add_theme_constant_override("separation", 14)
-	viewport_scroll.add_child(page)
+	page_padding.add_child(page)
 
 func _clear_page() -> void:
 	for child in page.get_children():
@@ -299,8 +305,9 @@ func _show_setup_page() -> void:
 	var move_header := HBoxContainer.new(); right.add_child(move_header)
 	var move_title := Label.new(); move_title.text = _tr_ui("move_cards"); move_title.add_theme_font_size_override("font_size",20); move_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL; move_header.add_child(move_title)
 	selection_count_label = Label.new(); move_header.add_child(selection_count_label)
-	var scroll := ScrollContainer.new(); scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; right.add_child(scroll)
-	moves_grid = GridContainer.new(); moves_grid.columns = _setup_move_columns(); moves_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL; moves_grid.add_theme_constant_override("h_separation",12); moves_grid.add_theme_constant_override("v_separation",12); scroll.add_child(moves_grid)
+	var scroll := ScrollContainer.new(); scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; _configure_touch_scrollbar(scroll); right.add_child(scroll)
+	var scroll_content_margin := MarginContainer.new(); scroll_content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll_content_margin.add_theme_constant_override("margin_right",12); scroll.add_child(scroll_content_margin)
+	moves_grid = GridContainer.new(); moves_grid.columns = _setup_move_columns(); moves_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL; moves_grid.add_theme_constant_override("h_separation",12); moves_grid.add_theme_constant_override("v_separation",12); scroll_content_margin.add_child(moves_grid)
 	start_button = Button.new(); start_button.text = _tr_ui("start_session"); start_button.custom_minimum_size = Vector2(0,64); start_button.add_theme_font_size_override("font_size",20); start_button.add_theme_color_override("font_color",Color.WHITE); start_button.add_theme_color_override("font_hover_color",Color.WHITE); start_button.add_theme_stylebox_override("normal",_ui_button_style(Color("167a67"),Color("56d6b9"),2)); start_button.add_theme_stylebox_override("hover",_ui_button_style(Color("1d9a7f"),Color("8cf4d9"),3)); start_button.add_theme_stylebox_override("pressed",_ui_button_style(Color("116052"),Color("b2ffec"),3)); start_button.add_theme_stylebox_override("disabled",_ui_button_style(Color("111a20"),Color("2b3a42"),1)); start_button.pressed.connect(_start_session); right.add_child(start_button)
 	if pokemon_docs.size() > 0:
 		var desired_id := String(selected_pokemon.get("id", "")); var select_index := 0
@@ -1163,6 +1170,24 @@ func _ui_button_style(bg_color: Color, border_color: Color, border_width: int) -
 	style.content_margin_right = 12.0
 	style.content_margin_top = 8.0
 	style.content_margin_bottom = 8.0
+	return style
+
+func _configure_touch_scrollbar(scroll: ScrollContainer) -> void:
+	var bar := scroll.get_v_scroll_bar()
+	bar.custom_minimum_size.x = 30.0
+	bar.add_theme_stylebox_override("scroll", _scrollbar_style(Color("101923"), Color("25384b"), 1))
+	bar.add_theme_stylebox_override("grabber", _scrollbar_style(Color("66819b"), Color("91abc4"), 1))
+	bar.add_theme_stylebox_override("grabber_highlight", _scrollbar_style(Color("8fb3d4"), Color("c4e1fb"), 2))
+	bar.add_theme_stylebox_override("grabber_pressed", _scrollbar_style(Color("b3d7f5"), Color.WHITE, 2))
+
+func _scrollbar_style(color: Color, border_color: Color, border_width: int) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.border_color = border_color
+	style.set_border_width_all(border_width)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = 4.0
+	style.content_margin_right = 4.0
 	return style
 
 
