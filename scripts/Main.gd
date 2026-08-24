@@ -220,6 +220,39 @@ func _move_description(doc: Dictionary) -> String:
 	var source: Dictionary = doc.get("source", {}) as Dictionary
 	return _localize_orientation_tokens(_tr_content("move.%s.description" % String(doc.get("move_name_id", "")), String(source.get("raw_text", ""))))
 
+func _move_effect_text(move_id: String, move_doc: Dictionary) -> String:
+	var source: Dictionary = move_doc.get("source", {}) as Dictionary
+	var source_move_effects: Array = source.get("move_effect_text", []) as Array
+	if source_move_effects.is_empty():
+		return ""
+	var description := _move_description(move_doc)
+	var outcome_texts: Array[String] = []
+	var outcomes: Array = move_doc.get("outcome_rules", []) as Array
+	for i in outcomes.size():
+		outcome_texts.append(_localized_outcome_text(move_id, move_doc, i, outcomes[i] as Dictionary).strip_edges())
+	var move_lines: Array[String] = []
+	for raw_line in description.split("\n", false):
+		var line := String(raw_line).strip_edges()
+		if line.is_empty():
+			continue
+		var is_outcome_line := false
+		for outcome_text in outcome_texts:
+			if not outcome_text.is_empty() and line.contains(outcome_text):
+				is_outcome_line = true
+				break
+		if not is_outcome_line:
+			move_lines.append(line)
+	if not move_lines.is_empty():
+		return _without_move_effect_heading("\n".join(move_lines))
+	return "\n".join(source_move_effects)
+
+func _without_move_effect_heading(text: String) -> String:
+	var cleaned := text.strip_edges()
+	for heading in ["Move Effect:", "Move effect:", "Efecto del movimiento:", "招式效果：", "招式效果:", "わざ効果：", "わざ効果:"]:
+		if cleaned.begins_with(heading):
+			return cleaned.trim_prefix(heading).strip_edges()
+	return cleaned
+
 func _build_shell() -> void:
 	_apply_locale_font()
 	root_margin = MarginContainer.new()
@@ -387,13 +420,22 @@ func _rebuild_move_choices() -> void:
 
 func _add_setup_effect_summary(card: VBoxContainer, move_id: String, move_doc: Dictionary) -> void:
 	var outcomes: Array = move_doc.get("outcome_rules", []) as Array
+	var move_effect := _move_effect_text(move_id, move_doc)
+	if not move_effect.is_empty():
+		var move_effect_label := Label.new()
+		move_effect_label.text = _first_line(move_effect, 125)
+		move_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		move_effect_label.max_lines_visible = 2
+		move_effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		card.add_child(move_effect_label)
 	if outcomes.is_empty():
-		var desc := Label.new()
-		desc.text = _first_line(_move_description(move_doc), 125)
-		desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		desc.max_lines_visible = 2
-		desc.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		card.add_child(desc)
+		if move_effect.is_empty():
+			var desc := Label.new()
+			desc.text = _first_line(_move_description(move_doc), 125)
+			desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			desc.max_lines_visible = 2
+			desc.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+			card.add_child(desc)
 		return
 	for i in mini(outcomes.size(), 2):
 		var outcome: Dictionary = outcomes[i] as Dictionary
@@ -774,24 +816,58 @@ func _add_card_energy_icons(parent: Control, move_doc: Dictionary, large: bool) 
 
 
 func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionary, large: bool) -> void:
+	var outcomes: Array = move_doc.get("outcome_rules",[]) as Array
+	var move_effect := _move_effect_text(move_id, move_doc)
+	if not move_effect.is_empty():
+		var strip := PanelContainer.new()
+		strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var energy_color := _attack_type_card_color(String(move_doc.get("attack_type", "normal")))
+		strip.add_theme_stylebox_override("panel", _panel_style(energy_color, 0, Color.TRANSPARENT, 0))
+		_set_fractional_rect(strip, Vector4(0.0,0.43,1.0,0.60))
+		parent.add_child(strip)
+		var strip_margin := MarginContainer.new()
+		strip_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		strip_margin.add_theme_constant_override("margin_left", 18 if large else 9)
+		strip_margin.add_theme_constant_override("margin_right", 18 if large else 9)
+		strip_margin.add_theme_constant_override("margin_top", 3)
+		strip_margin.add_theme_constant_override("margin_bottom", 3)
+		strip.add_child(strip_margin)
+		var move_effect_label := Label.new()
+		move_effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		move_effect_label.text = move_effect
+		move_effect_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		move_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		move_effect_label.max_lines_visible = 2
+		move_effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		move_effect_label.add_theme_font_size_override("font_size", 22 if large else 14)
+		var use_dark_text := energy_color.get_luminance() >= 0.46
+		var effect_font_color := Color("07131d") if use_dark_text else Color.WHITE
+		var effect_outline_color := Color(1.0,1.0,1.0,0.42) if use_dark_text else Color(0.0,0.0,0.0,0.94)
+		move_effect_label.add_theme_color_override("font_color", effect_font_color)
+		move_effect_label.add_theme_color_override("font_outline_color", effect_outline_color)
+		move_effect_label.add_theme_constant_override("outline_size", 1 if use_dark_text else (3 if large else 2))
+		strip_margin.add_child(move_effect_label)
+
 	var effects := VBoxContainer.new()
 	effects.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	effects.add_theme_constant_override("separation", 6 if large else 3)
-	_set_fractional_rect(effects, Vector4(0.025,0.49,0.965,0.93))
+	# Keep both the Charakoro face icons and their text fully inside the
+	# lower black card area, whether or not the card has a Move Effect strip.
+	_set_fractional_rect(effects, Vector4(0.025,0.61,0.965,0.98))
 	parent.add_child(effects)
-	var outcomes: Array = move_doc.get("outcome_rules",[]) as Array
 	if outcomes.is_empty():
-		var description := Label.new()
-		description.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		description.text = _move_description(move_doc)
-		description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		description.max_lines_visible = 5
-		description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		description.add_theme_font_size_override("font_size", 23 if large else 16)
-		description.add_theme_color_override("font_color", Color.WHITE)
-		description.add_theme_color_override("font_outline_color", Color(0.02,0.03,0.05,0.95))
-		description.add_theme_constant_override("outline_size", 2)
-		effects.add_child(description)
+		if move_effect.is_empty():
+			var description := Label.new()
+			description.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			description.text = _move_description(move_doc)
+			description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			description.max_lines_visible = 5
+			description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+			description.add_theme_font_size_override("font_size", 23 if large else 16)
+			description.add_theme_color_override("font_color", Color.WHITE)
+			description.add_theme_color_override("font_outline_color", Color(0.02,0.03,0.05,0.95))
+			description.add_theme_constant_override("outline_size", 2)
+			effects.add_child(description)
 		return
 	for i in outcomes.size():
 		var outcome: Dictionary = outcomes[i] as Dictionary
@@ -800,6 +876,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		var row := HBoxContainer.new()
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.custom_minimum_size.y = 32.0 if large else 20.0
 		row.add_theme_constant_override("separation", 9 if large else 5)
 		effects.add_child(row)
 
@@ -820,6 +897,8 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		var line := Label.new()
 		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		line.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		line.text = _localized_outcome_text(move_id, move_doc, i, outcome)
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		line.max_lines_visible = 4 if large else (3 if outcomes.size() <= 2 else 2)
