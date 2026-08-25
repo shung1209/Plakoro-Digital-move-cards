@@ -12,6 +12,7 @@ const MAX_MOVES := 4
 # preload references also guarantees that the Web exporter includes them.
 const FONT_JA: Font = preload("res://assets/fonts/NotoSansJP/NotoSansJP-Regular.ttf")
 const FONT_ZH_TW: Font = preload("res://assets/fonts/NotoSansTC/NotoSansTC-Regular.ttf")
+const FONT_NINJA_ATTACK: Font = preload("res://assets/fonts/Ninjaattack/NinjaAttackItalic-p7x1O.ttf")
 
 const LOCALES := {
 	"English": "en_US",
@@ -803,10 +804,13 @@ func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool) -
 	_set_fractional_rect(attack_icon, Vector4(0.025,0.05,0.145,0.34))
 	root.add_child(attack_icon)
 
-	_add_card_label(root, _pokemon_name(selected_pokemon), Vector4(0.16,0.035,0.68,0.17), 18 if large else 11, HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
-	_add_card_label(root, _move_name(move_doc), Vector4(0.14,0.15,0.80,0.43), 34 if large else 21, HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 5 if large else 3)
-	var damage_value := "—" if move_doc.get("printed_damage", null) == null else str(move_doc.get("printed_damage"))
-	_add_card_label(root, damage_value, Vector4(0.80,0.13,0.97,0.43), 38 if large else 24, HORIZONTAL_ALIGNMENT_CENTER, Color(1.0,0.25,0.20), 5 if large else 3, Color.WHITE)
+	_add_card_label(root, _pokemon_name(selected_pokemon), Vector4(0.16,0.035,0.68,0.17), 20 if large else 13, HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
+	_add_card_label(root, _move_name(move_doc), Vector4(0.14,0.15,0.80,0.43), 38 if large else 26, HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 5 if large else 3)
+	var printed_damage = move_doc.get("printed_damage", null)
+	var damage_value := _format_damage_value(printed_damage)
+	var damage_label := _add_card_label(root, damage_value, Vector4(0.79,0.11,0.98,0.44), 48 if large else 34, HORIZONTAL_ALIGNMENT_CENTER, Color(1.0,0.25,0.20), 5 if large else 3, Color.WHITE)
+	if printed_damage != null:
+		damage_label.add_theme_font_override("font", FONT_NINJA_ATTACK)
 	_add_card_energy_icons(root, move_doc, large)
 	_add_card_effect_rows(root, move_id, move_doc, large)
 
@@ -861,7 +865,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		move_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		move_effect_label.max_lines_visible = 2
 		move_effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		move_effect_label.add_theme_font_size_override("font_size", 22 if large else 14)
+		move_effect_label.add_theme_font_size_override("font_size", 25 if large else 17)
 		var use_dark_text := energy_color.get_luminance() >= 0.46
 		var effect_font_color := Color("07131d") if use_dark_text else Color.WHITE
 		var effect_outline_color := Color(1.0,1.0,1.0,0.42) if use_dark_text else Color(0.0,0.0,0.0,0.94)
@@ -885,7 +889,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 			description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			description.max_lines_visible = 5
 			description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-			description.add_theme_font_size_override("font_size", 23 if large else 16)
+			description.add_theme_font_size_override("font_size", 25 if large else 18)
 			description.add_theme_color_override("font_color", Color.WHITE)
 			description.add_theme_color_override("font_outline_color", Color(0.02,0.03,0.05,0.95))
 			description.add_theme_constant_override("outline_size", 2)
@@ -925,7 +929,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		line.max_lines_visible = 4 if large else (3 if outcomes.size() <= 2 else 2)
 		line.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		line.add_theme_font_size_override("font_size", 22 if large else 15)
+		line.add_theme_font_size_override("font_size", 25 if large else 17)
 		line.add_theme_color_override("font_color", Color.WHITE)
 		line.add_theme_color_override("font_outline_color", Color(0.02,0.03,0.05,0.95))
 		line.add_theme_constant_override("outline_size", 2)
@@ -1307,7 +1311,12 @@ func _energy_cost_text(move_doc: Dictionary) -> String:
 	return "Enekoro " + " + ".join(parts)
 
 func _damage_text(move_doc: Dictionary) -> String:
-	var damage = move_doc.get("printed_damage",null); return _tr_ui("damage", {"value":"—" if damage == null else str(damage)})
+	var damage = move_doc.get("printed_damage",null); return _tr_ui("damage", {"value":_format_damage_value(damage)})
+
+func _format_damage_value(damage: Variant) -> String:
+	if damage == null:
+		return "—"
+	return str(int(round(float(damage))))
 
 func _first_line(text: String, max_chars: int) -> String:
 	var line := text.replace("\n"," ").strip_edges(); return line if line.length() <= max_chars else line.left(max_chars-1) + "…"

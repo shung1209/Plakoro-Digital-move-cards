@@ -34,28 +34,6 @@
       },
       "actions": [],
       "raw_text": "Cancel the damage this move does to this Pokémon."
-    },
-    {
-      "condition": {
-        "type": "kyokoro_orientation_any",
-        "orientations": [
-          "HEAD_DOWN",
-          "FACE_UP",
-          "FACE_DOWN",
-          "HEAD_LEFT",
-          "HEAD_RIGHT"
-        ]
-      },
-      "actions": [
-        {
-          "opcode": "damage.recoil",
-          "args": {
-            "target": "self",
-            "amount": 120
-          }
-        }
-      ],
-      "raw_text": "This Pokémon also takes 120 damage."
     }
   ],
   "resolution": {
