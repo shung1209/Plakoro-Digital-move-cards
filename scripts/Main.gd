@@ -40,6 +40,13 @@ const UI_TEXT := {
 	}
 }
 
+const ONLINE_UI_TEXT := {
+	"en_US":{"online":"Connect","online_title":"Phone Connection","online_name":"Your name","online_server":"Server","online_connect":"Connect","online_disconnect":"Disconnect","online_create":"Create Room","online_join":"Join Room","online_code":"Room code","online_waiting":"Waiting for opponent","online_ready":"Connected • {code}","online_opponent_move":"Opponent's Move","online_hint":"Create a room on one phone, then enter its six-character code on the other phone.","online_invalid_code":"Enter a six-character room code.","initiative_title":"Decide who goes first","initiative_needed":"Choose coin flip or rock-paper-scissors before starting.","coin_flip":"Flip Coin","rps":"Rock Paper Scissors","rock":"Rock","paper":"Paper","scissors":"Scissors","initiative_waiting":"Waiting for the opponent's choice…","initiative_tie":"Tie — choose again","initiative_you_first":"You go first","initiative_opponent_first":"Opponent goes first","ready_for_battle":"Ready","waiting_ready":"Waiting for opponent to finish selecting…"},
+	"es_ES":{"online":"Conectar","online_title":"Conexión entre teléfonos","online_name":"Tu nombre","online_server":"Servidor","online_connect":"Conectar","online_disconnect":"Desconectar","online_create":"Crear sala","online_join":"Unirse","online_code":"Código de sala","online_waiting":"Esperando al oponente","online_ready":"Conectado • {code}","online_opponent_move":"Movimiento del oponente","online_hint":"Crea una sala en un teléfono e introduce el código de seis caracteres en el otro.","online_invalid_code":"Introduce un código de seis caracteres.","initiative_title":"Decidir quién empieza","initiative_needed":"Elige moneda o piedra, papel o tijera antes de empezar.","coin_flip":"Lanzar moneda","rps":"Piedra, papel o tijera","rock":"Piedra","paper":"Papel","scissors":"Tijera","initiative_waiting":"Esperando la elección del oponente…","initiative_tie":"Empate: elige de nuevo","initiative_you_first":"Tú empiezas","initiative_opponent_first":"El oponente empieza","ready_for_battle":"Listo","waiting_ready":"Esperando a que el oponente termine de elegir…"},
+	"ja_JP":{"online":"接続","online_title":"スマホ接続","online_name":"あなたの名前","online_server":"サーバー","online_connect":"接続","online_disconnect":"切断","online_create":"ルーム作成","online_join":"参加","online_code":"ルームコード","online_waiting":"相手を待っています","online_ready":"接続済み • {code}","online_opponent_move":"相手のわざ","online_hint":"1台目でルームを作成し、2台目に6文字のコードを入力します。","online_invalid_code":"6文字のルームコードを入力してください。","initiative_title":"先攻を決める","initiative_needed":"コイントスかじゃんで先攻を決めてください。","coin_flip":"コイントス","rps":"じゃんけん","rock":"グー","paper":"パー","scissors":"チョキ","initiative_waiting":"相手の選択を待っています…","initiative_tie":"あいこ — もう一度選択","initiative_you_first":"あなたが先攻","initiative_opponent_first":"相手が先攻","ready_for_battle":"準備完了","waiting_ready":"相手の選択完了を待っています…"},
+	"zh_TW":{"online":"連線","online_title":"手機對戰連線","online_name":"你的名稱","online_server":"伺服器","online_connect":"連線","online_disconnect":"斷開連線","online_create":"建立房間","online_join":"加入房間","online_code":"房間碼","online_waiting":"等待對手加入","online_ready":"已連線 • {code}","online_opponent_move":"對手出招","online_hint":"在一台手機建立房間，再於另一台輸入六位房間碼。","online_invalid_code":"請輸入六位房間碼。","initiative_title":"決定先攻","initiative_needed":"開始前請以擲硬幣或猜拳決定先攻。","coin_flip":"擲硬幣","rps":"猜拳","rock":"石頭","paper":"布","scissors":"剪刀","initiative_waiting":"等待對手選擇…","initiative_tie":"平手，請重新選擇","initiative_you_first":"你先攻","initiative_opponent_first":"對手先攻","ready_for_battle":"準備完成","waiting_ready":"等待對手完成選擇…"}
+}
+
 const TYPE_COLORS := {
 	"fire": Color("7f3027"), "water": Color("255678"), "electric": Color("8b7620"),
 	"grass": Color("376c3d"), "flying": Color("546c86"), "normal": Color("62656c"),
@@ -96,6 +103,8 @@ var status_details_expanded := false
 var showing_play_page := false
 var last_layout_signature := ""
 var layout_refresh_pending := false
+var online_sequence := 0
+var online_waiting_to_start := false
 
 func _ready() -> void:
 	_load_database()
@@ -103,6 +112,11 @@ func _ready() -> void:
 	_build_shell()
 	_show_setup_page()
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
+	OnlineRelay.opponent_move_received.connect(_on_opponent_move_received)
+	OnlineRelay.online_error.connect(_on_online_error)
+	OnlineRelay.room_changed.connect(_on_online_room_changed)
+	OnlineRelay.initiative_changed.connect(_on_online_initiative_changed)
+	OnlineRelay.battle_ready.connect(_on_online_battle_ready)
 
 func _load_database() -> void:
 	pokemon_docs.clear()
@@ -211,7 +225,8 @@ func _tr_content(key: String, fallback := "") -> String:
 
 func _tr_ui(key: String, replacements: Dictionary = {}) -> String:
 	var locale_table: Dictionary = UI_TEXT.get(current_locale, UI_TEXT["en_US"])
-	var value := String(locale_table.get(key, (UI_TEXT["en_US"] as Dictionary).get(key, key)))
+	var online_table: Dictionary = ONLINE_UI_TEXT.get(current_locale, ONLINE_UI_TEXT["en_US"])
+	var value := String(locale_table.get(key, online_table.get(key, (UI_TEXT["en_US"] as Dictionary).get(key, (ONLINE_UI_TEXT["en_US"] as Dictionary).get(key, key)))))
 	for replacement_key in replacements.keys():
 		value = value.replace("{%s}" % String(replacement_key), str(replacements[replacement_key]))
 	return value
@@ -360,6 +375,7 @@ func _header(subtitle: String) -> void:
 		if LOCALES[label] == current_locale: selected_idx = idx
 		idx += 1
 	language_option.select(selected_idx); language_option.item_selected.connect(_on_language_selected); row.add_child(language_option)
+	var online_button := Button.new(); online_button.text = _online_button_text(); online_button.custom_minimum_size = Vector2(150,46); online_button.pressed.connect(_open_online_popup); row.add_child(online_button)
 	page.add_child(HSeparator.new())
 
 func _show_setup_page() -> void:
@@ -424,6 +440,7 @@ func _on_pokemon_selected(index: int) -> void:
 	if index >= 0 and index < pokemon_docs.size(): _select_pokemon(pokemon_docs[index])
 
 func _select_pokemon(doc: Dictionary) -> void:
+	_cancel_online_ready()
 	selected_pokemon = doc; selected_move_ids.clear(); move_checkboxes.clear()
 	pokemon_name_label.text = _pokemon_name(doc)
 	pokemon_meta_label.text = "HP %d" % int(doc.get("max_hp", 0))
@@ -635,6 +652,7 @@ func _add_setup_effect_summary(card: VBoxContainer, move_id: String, move_doc: D
 		effect_row.add_child(effect_text)
 
 func _on_move_toggled(enabled: bool, move_id: String) -> void:
+	_cancel_online_ready()
 	if enabled:
 		if selected_move_ids.size() >= MAX_MOVES:
 			(move_checkboxes[move_id] as BaseButton).set_pressed_no_signal(false); return
@@ -645,12 +663,35 @@ func _on_move_toggled(enabled: bool, move_id: String) -> void:
 
 func _update_selection_state() -> void:
 	if selection_count_label: selection_count_label.text = _tr_ui("selected_count", {"current":selected_move_ids.size(),"max":MAX_MOVES})
-	if start_button: start_button.disabled = selected_move_ids.size() != MAX_MOVES
+	if start_button:
+		var waiting_online := not OnlineRelay.room.is_empty() and not OnlineRelay.is_ready_for_moves()
+		var needs_initiative := OnlineRelay.is_ready_for_moves() and String(OnlineRelay.room.get("first_player_id", "")).is_empty()
+		start_button.disabled = selected_move_ids.size() != MAX_MOVES or waiting_online or needs_initiative or online_waiting_to_start
+		start_button.text = _tr_ui("waiting_ready") if online_waiting_to_start else (_tr_ui("online_waiting") if waiting_online else (_tr_ui("initiative_needed") if needs_initiative else (_tr_ui("ready_for_battle") if OnlineRelay.is_ready_for_moves() else _tr_ui("start_session"))))
 
 func _start_session() -> void:
-	if selected_move_ids.size() != MAX_MOVES: return
-	current_hp = int(selected_pokemon.get("max_hp",0)); previous_move_id = ""; turn_number = 1; phase = "player"
+	if selected_move_ids.size() != MAX_MOVES or (not OnlineRelay.room.is_empty() and (not OnlineRelay.is_ready_for_moves() or String(OnlineRelay.room.get("first_player_id", "")).is_empty())): return
+	if OnlineRelay.is_ready_for_moves():
+		online_waiting_to_start = true
+		OnlineRelay.set_battle_ready(true, {"pokemon_id":String(selected_pokemon.get("species_id", selected_pokemon.get("id", ""))), "move_ids":selected_move_ids.duplicate()})
+		_update_selection_state()
+		return
+	_begin_session()
+
+
+func _begin_session() -> void:
+	OnlineRelay.reset_move_history()
+	current_hp = int(selected_pokemon.get("max_hp",0)); previous_move_id = ""; turn_number = 1
+	# Offline remains the original manual flow. In an online room the host opens
+	# the first turn and the joining phone waits for that confirmed move.
+	phase = "player" if not OnlineRelay.is_ready_for_moves() or OnlineRelay.player_id == String(OnlineRelay.room.get("first_player_id", "")) else "opponent"
 	pending_opponent_reminders.clear(); pending_self_reminders.clear(); last_kyokoro_result = ""; last_resolved_effects.clear(); last_resolution_details.clear(); _show_play_page()
+
+
+func _cancel_online_ready() -> void:
+	if not online_waiting_to_start: return
+	online_waiting_to_start = false
+	if OnlineRelay.is_ready_for_moves(): OnlineRelay.set_battle_ready(false)
 
 func _show_play_page() -> void:
 	showing_play_page = true
@@ -719,10 +760,16 @@ func _build_play_toolbar() -> void:
 	language_option.item_selected.connect(_on_language_selected)
 	row.add_child(language_option)
 
+	var online_button := Button.new()
+	online_button.text = _online_button_text()
+	online_button.custom_minimum_size = Vector2(150,40)
+	online_button.pressed.connect(_open_online_popup)
+	row.add_child(online_button)
+
 	var opponent_finished := Button.new()
 	opponent_finished.text = _tr_ui("opponent_finished")
 	opponent_finished.custom_minimum_size = Vector2(205,40)
-	opponent_finished.visible = phase == "opponent"
+	opponent_finished.visible = phase == "opponent" and not OnlineRelay.is_ready_for_moves()
 	opponent_finished.pressed.connect(_confirm_opponent_turn_finished)
 	row.add_child(opponent_finished)
 
@@ -930,7 +977,7 @@ func _create_move_card(move_id: String, move_doc: Dictionary) -> Control:
 	return button
 
 
-func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool, compact_selection := false) -> Control:
+func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool, compact_selection := false, pokemon_override: Dictionary = {}) -> Control:
 	# This layout is intentionally derived from the original V2.2
 	# PlakoroMoveButton.gd renderer and uses the same background.png asset.
 	var root := Control.new()
@@ -958,7 +1005,8 @@ func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool, c
 	_set_fractional_rect(attack_icon, Vector4(0.025,0.05,0.145,0.34))
 	root.add_child(attack_icon)
 
-	_add_card_label(root, _pokemon_name(selected_pokemon), Vector4(0.16,0.035,0.68,0.17), 20 if large else (14 if compact_selection else 16), HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
+	var card_pokemon := pokemon_override if not pokemon_override.is_empty() else selected_pokemon
+	_add_card_label(root, _pokemon_name(card_pokemon), Vector4(0.16,0.035,0.68,0.17), 20 if large else (14 if compact_selection else 16), HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
 	_add_card_label(root, _move_name(move_doc), Vector4(0.14,0.15,0.80,0.43), 38 if large else (26 if compact_selection else 30), HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 5 if large else 3)
 	var printed_damage = move_doc.get("printed_damage", null)
 	var damage_value := _format_damage_value(printed_damage)
@@ -1314,6 +1362,7 @@ func _finalize_move_use(move_id: String, orientation: String, matched: Array[Dic
 	var total_damage: Variant = 0 if move_failed else _calculate_total_damage(move_doc, matched)
 	if not move_failed:
 		last_resolution_details = _calculate_resolution_details(move_doc, matched)
+	_publish_online_move(move_id, orientation, total_damage, move_failed)
 	previous_move_id = move_id
 	phase = "opponent"
 	_show_play_page()
@@ -1439,6 +1488,187 @@ func _add_result_notice(parent: VBoxContainer, value: String, color: Color) -> v
 	notice.add_theme_font_size_override("font_size", 18)
 	notice.add_theme_color_override("font_color", color)
 	parent.add_child(notice)
+
+
+func _online_button_text() -> String:
+	if OnlineRelay.room.is_empty(): return _tr_ui("online")
+	var code := String(OnlineRelay.room.get("code", ""))
+	if int(OnlineRelay.room.get("player_count", 0)) < 2: return _tr_ui("online_waiting")
+	return _tr_ui("online_ready", {"code":code})
+
+
+func _open_online_popup() -> void:
+	var popup := PopupPanel.new()
+	popup.exclusive = true
+	popup.add_theme_stylebox_override("panel", _panel_style(Color("111821"), 14, Color("56728d"), 2))
+	add_child(popup)
+	popup.popup_hide.connect(func(): popup.queue_free())
+	var margin := MarginContainer.new()
+	for side in ["left","right","top","bottom"]: margin.add_theme_constant_override("margin_%s" % side, 18)
+	popup.add_child(margin)
+	var box := VBoxContainer.new(); box.add_theme_constant_override("separation", 10); margin.add_child(box)
+	var title := Label.new(); title.text = _tr_ui("online_title"); title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; title.add_theme_font_size_override("font_size", 24); box.add_child(title)
+	var hint := Label.new(); hint.text = _tr_ui("online_hint"); hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; hint.modulate = Color("b8c7d8"); box.add_child(hint)
+	var name_edit := LineEdit.new(); name_edit.placeholder_text = _tr_ui("online_name"); name_edit.text = "Player"; name_edit.custom_minimum_size.y = 44; box.add_child(name_edit)
+	var server_edit := LineEdit.new(); server_edit.placeholder_text = _tr_ui("online_server"); server_edit.text = OnlineRelay.default_server_url(); server_edit.custom_minimum_size.y = 44; box.add_child(server_edit)
+	var connect := Button.new(); connect.custom_minimum_size.y = 46; box.add_child(connect)
+	var room_row := HBoxContainer.new(); room_row.add_theme_constant_override("separation", 8); box.add_child(room_row)
+	var create := Button.new(); create.text = _tr_ui("online_create"); create.size_flags_horizontal = Control.SIZE_EXPAND_FILL; create.custom_minimum_size.y = 48; room_row.add_child(create)
+	var code_edit := LineEdit.new(); code_edit.placeholder_text = _tr_ui("online_code"); code_edit.max_length = 6; code_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL; code_edit.custom_minimum_size.y = 48; room_row.add_child(code_edit)
+	var join := Button.new(); join.text = _tr_ui("online_join"); join.size_flags_horizontal = Control.SIZE_EXPAND_FILL; join.custom_minimum_size.y = 48; room_row.add_child(join)
+	var status := Label.new(); status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; box.add_child(status)
+	var initiative_title := Label.new(); initiative_title.text = _tr_ui("initiative_title"); initiative_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; initiative_title.add_theme_font_size_override("font_size", 18); box.add_child(initiative_title)
+	var initiative_row := HBoxContainer.new(); initiative_row.add_theme_constant_override("separation", 8); box.add_child(initiative_row)
+	var coin := Button.new(); coin.text = _tr_ui("coin_flip"); coin.size_flags_horizontal = Control.SIZE_EXPAND_FILL; coin.custom_minimum_size.y = 46; coin.pressed.connect(OnlineRelay.request_coin_flip); initiative_row.add_child(coin)
+	var rps_row := HBoxContainer.new(); rps_row.add_theme_constant_override("separation", 8); box.add_child(rps_row)
+	for choice in ["rock", "paper", "scissors"]:
+		var choice_button := Button.new(); choice_button.text = _tr_ui(choice); choice_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL; choice_button.custom_minimum_size.y = 46; choice_button.pressed.connect(OnlineRelay.submit_rps.bind(choice)); rps_row.add_child(choice_button)
+	var refresh := func():
+		var connected := OnlineRelay.state == &"connected"
+		connect.text = _tr_ui("online_disconnect") if connected else _tr_ui("online_connect")
+		server_edit.editable = not connected
+		create.disabled = not connected
+		join.disabled = not connected
+		var ready := OnlineRelay.is_ready_for_moves()
+		coin.disabled = not ready or not String(OnlineRelay.room.get("first_player_id", "")).is_empty()
+		for child in rps_row.get_children(): (child as Button).disabled = not ready or not String(OnlineRelay.room.get("first_player_id", "")).is_empty()
+		status.text = _initiative_status_text() if ready else (_online_button_text() if connected else String(OnlineRelay.state).capitalize())
+	refresh.call()
+	connect.pressed.connect(func():
+		if OnlineRelay.state == &"disconnected": OnlineRelay.connect_to_server(server_edit.text)
+		else: OnlineRelay.disconnect_from_server()
+	)
+	create.pressed.connect(func(): OnlineRelay.create_room(name_edit.text))
+	join.pressed.connect(func():
+		if code_edit.text.strip_edges().length() != 6:
+			status.text = _tr_ui("online_invalid_code")
+			return
+		OnlineRelay.join_room(code_edit.text, name_edit.text)
+	)
+	var state_callback := func(_state: StringName): refresh.call()
+	var room_callback := func(_room: Dictionary): refresh.call()
+	var initiative_callback := func(_result: Dictionary): refresh.call()
+	OnlineRelay.connection_changed.connect(state_callback)
+	OnlineRelay.room_changed.connect(room_callback)
+	OnlineRelay.initiative_changed.connect(initiative_callback)
+	popup.tree_exiting.connect(func():
+		if OnlineRelay.connection_changed.is_connected(state_callback): OnlineRelay.connection_changed.disconnect(state_callback)
+		if OnlineRelay.room_changed.is_connected(room_callback): OnlineRelay.room_changed.disconnect(room_callback)
+		if OnlineRelay.initiative_changed.is_connected(initiative_callback): OnlineRelay.initiative_changed.disconnect(initiative_callback)
+	)
+	_show_popup_at_size(popup, Vector2i(650, 535))
+
+
+func _publish_online_move(move_id: String, orientation: String, total_damage: Variant, move_failed: bool) -> void:
+	if not OnlineRelay.is_ready_for_moves(): return
+	online_sequence += 1
+	OnlineRelay.publish_move({
+		"protocol":1,
+		"sequence":online_sequence,
+		"move_id":move_id,
+		"pokemon_id":String(selected_pokemon.get("species_id", selected_pokemon.get("id", ""))),
+		"orientation":orientation,
+		"move_failed":move_failed,
+		"total_damage":total_damage,
+		"details":last_resolution_details.duplicate(true)
+	})
+
+
+func _on_opponent_move_received(payload: Dictionary) -> void:
+	var move_id := String(payload.get("move_id", ""))
+	if not move_docs.has(move_id):
+		_on_online_error("Unknown opponent move: %s" % move_id)
+		return
+	if phase == "opponent":
+		phase = "player"
+		turn_number += 1
+		pending_opponent_reminders.clear()
+		_show_play_page()
+	call_deferred("_show_opponent_move_popup", payload)
+
+
+func _show_opponent_move_popup(payload: Dictionary) -> void:
+	var move_id := String(payload.get("move_id", ""))
+	if not move_docs.has(move_id): return
+	var move_doc: Dictionary = move_docs[move_id]
+	var pokemon_doc := _find_pokemon_by_species(String(payload.get("pokemon_id", "")))
+	var orientation := String(payload.get("orientation", ""))
+	var move_failed := bool(payload.get("move_failed", false))
+	var matched := _matched_outcomes_for_orientation(move_doc, orientation) if not move_failed else [] as Array[Dictionary]
+	var effects: Array[String] = []
+	if not move_failed:
+		var fixed := _move_effect_text(move_id, move_doc)
+		if not fixed.is_empty(): effects.append(fixed)
+		for item in matched:
+			var idx := int(item.get("index", 0)); var outcome := item.get("outcome", {}) as Dictionary
+			effects.append(_localized_outcome_text(move_id, move_doc, idx, outcome))
+	var popup := PopupPanel.new(); popup.exclusive = true; popup.add_theme_stylebox_override("panel", _panel_style(Color("10161d"), 14, Color("73a5ce"), 2)); add_child(popup); popup.popup_hide.connect(func(): popup.queue_free())
+	var margin := MarginContainer.new(); for side in ["left","right","top","bottom"]: margin.add_theme_constant_override("margin_%s" % side, 14); popup.add_child(margin)
+	var row := HBoxContainer.new(); row.add_theme_constant_override("separation", 16); margin.add_child(row)
+	var card := _build_real_move_card(move_id, move_doc, true, false, pokemon_doc); card.custom_minimum_size = Vector2(700, 349); row.add_child(card)
+	var side := VBoxContainer.new(); side.custom_minimum_size.x = 350; side.add_theme_constant_override("separation", 9); row.add_child(side)
+	var title := Label.new(); title.text = _tr_ui("online_opponent_move"); title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; title.add_theme_font_size_override("font_size", 24); side.add_child(title)
+	var scroll := ScrollContainer.new(); scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; _configure_touch_scrollbar(scroll); side.add_child(scroll)
+	var results := VBoxContainer.new(); results.size_flags_horizontal = Control.SIZE_EXPAND_FILL; results.add_theme_constant_override("separation", 8); scroll.add_child(results)
+	if move_failed:
+		_add_result_notice(results, _tr_ui("result_failed"), Color("ff9a8c"))
+	else:
+		var total = payload.get("total_damage", null)
+		var damage_title := Label.new(); damage_title.text = _tr_ui("result_total_damage"); damage_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; results.add_child(damage_title)
+		var damage := Label.new(); damage.text = _format_damage_value(total); damage.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; damage.add_theme_font_override("font", FONT_NINJA_ATTACK); damage.add_theme_font_size_override("font_size", 54); damage.add_theme_color_override("font_color", Color("ff5548")); results.add_child(damage)
+		if total != null and int(total) > 0: _add_result_notice(results, _tr_ui("result_weakness_damage", {"value":int(total) + 20}), Color("ffd47a"))
+		var details := payload.get("details", {}) as Dictionary
+		if int(details.get("self_damage", 0)) > 0: _add_result_notice(results, _tr_ui("result_self_damage", {"value":details.get("self_damage", 0)}), Color("ff9a8c"))
+		if int(details.get("self_heal", 0)) > 0: _add_result_notice(results, _tr_ui("result_heal", {"value":details.get("self_heal", 0)}), Color("78e0a8"))
+		if int(details.get("incoming_reduction", 0)) > 0: _add_result_notice(results, _tr_ui("result_reduction", {"value":details.get("incoming_reduction", 0)}), Color("8fc7ff"))
+		if bool(details.get("incoming_immunity", false)): _add_result_notice(results, _tr_ui("result_immunity"), Color("8fc7ff"))
+		var effects_title := Label.new(); effects_title.text = _tr_ui("result_effects"); effects_title.add_theme_color_override("font_color", Color("ffd47a")); results.add_child(effects_title)
+		if effects.is_empty(): effects.append(_tr_ui("result_no_effect"))
+		for effect in effects:
+			var line := Label.new(); line.text = "• %s" % effect; line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; line.add_theme_font_size_override("font_size", 17); results.add_child(line)
+	var close := Button.new(); close.text = _tr_ui("close"); close.custom_minimum_size.y = 48; close.pressed.connect(popup.hide); side.add_child(close)
+	_show_popup_at_size(popup, Vector2i(1120, 430))
+
+
+func _matched_outcomes_for_orientation(move_doc: Dictionary, orientation: String) -> Array[Dictionary]:
+	var matched: Array[Dictionary] = []
+	var outcomes := _move_outcome_rules(move_doc)
+	for index in outcomes.size():
+		var outcome := outcomes[index] as Dictionary
+		if orientation in ((outcome.get("condition", {}) as Dictionary).get("orientations", []) as Array): matched.append({"index":index, "outcome":outcome})
+	return matched
+
+
+func _find_pokemon_by_species(species_id: String) -> Dictionary:
+	for pokemon in pokemon_docs:
+		if String(pokemon.get("species_id", pokemon.get("id", ""))) == species_id: return pokemon
+	return selected_pokemon
+
+
+func _on_online_error(message: String) -> void:
+	var dialog := AcceptDialog.new(); dialog.title = _tr_ui("online_title"); dialog.dialog_text = message; add_child(dialog); dialog.popup_hide.connect(func(): dialog.queue_free()); dialog.popup_centered(Vector2i(520, 180))
+
+
+func _on_online_room_changed(_room: Dictionary) -> void:
+	if not showing_play_page:
+		if online_waiting_to_start and OnlineRelay.player_id not in (OnlineRelay.room.get("ready_player_ids", []) as Array): online_waiting_to_start = false
+		_update_selection_state()
+
+
+func _on_online_initiative_changed(_result: Dictionary) -> void:
+	if not showing_play_page: _update_selection_state()
+
+
+func _on_online_battle_ready(_match: Dictionary) -> void:
+	if showing_play_page or not online_waiting_to_start: return
+	online_waiting_to_start = false
+	_begin_session()
+
+
+func _initiative_status_text() -> String:
+	var first_player := String(OnlineRelay.room.get("first_player_id", ""))
+	if first_player.is_empty(): return _tr_ui("initiative_needed")
+	return _tr_ui("initiative_you_first") if first_player == OnlineRelay.player_id else _tr_ui("initiative_opponent_first")
 
 
 func _show_popup_at_size(popup: PopupPanel, requested_size: Vector2i) -> void:
