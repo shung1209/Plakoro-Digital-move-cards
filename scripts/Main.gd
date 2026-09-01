@@ -23,16 +23,20 @@ const LOCALES := {
 
 const UI_TEXT := {
 	"en_US": {
-		"title": "PLAKORO — Digital Move Cards", "setup_subtitle": "Choose one Pokémon and exactly four move cards for your physical tabletop game.", "pokemon": "Pokémon", "move_cards": "Move cards", "start_session": "Start Tabletop Session", "selected_count": "{current} / {max} selected", "used_cards": "Used cards: {cards}", "hide_info": "Hide info ▲", "show_info": "Show info ▼", "info_tooltip": "Hide or show the optional Pokémon / HP / weakness information.", "your_turn_short": "Turn {turn}  •  YOUR TURN", "opponent_turn_short": "Turn {turn}  •  OPPONENT TURN", "end_game": "End Game", "reduce_hp": "Reduce HP by 10", "restore_hp": "Restore HP by 10", "weakness": "Weakness:", "weakness_tooltip": "{type} weakness", "your_turn": "Turn {turn} — YOUR TURN: choose one move", "opponent_turn": "Turn {turn} — OPPONENT TURN: resolve the physical turn, then confirm when finished", "last_charakoro": "Last Charakoro: {result}", "roll_failed_ignored": "Enekoro insufficient — move failed; Charakoro effect ignored", "triggered": "Triggered: {effects}", "active_effect": "⚠ Active turn effect", "waiting_opponent": "WAITING FOR OPPONENT", "locked_last_turn": "LOCKED — used last turn", "locked_tooltip": "This move was used last turn and cannot be used this turn.", "opponent_finished": "Opponent Turn Finished", "roll_hint": "Roll Enekoro and Charakoro together on the physical table. The Enekoro requirement is validated first; only a successful move may trigger its Charakoro effect.", "cancel": "Cancel", "use_move": "Use Move", "resolve_roll": "Resolve Enekoro + Charakoro", "resolve_subtitle": "Enekoro is checked first. If it succeeds, select the Charakoro face from the same roll.", "enerkoro_failed": "Enekoro insufficient — move failed", "select_face": "Enekoro succeeded — select Charakoro face", "no_energy": "No Energy", "damage": "Damage {value}", "head_up": "Head Up", "head_down": "Head Down", "head_left": "Head Left", "head_right": "Head Right", "face_up": "Face Up", "face_down": "Face Down", "resolution_title": "Move Result", "result_total_damage": "Total damage", "result_effects": "Triggered effects", "result_active_effects": "Active turn effects", "result_no_effect": "No additional Charakoro effect", "result_failed": "Move failed — no damage or effects", "result_weakness_damage": "If Weakness applies: {value} total damage (+20)", "close": "Close"
+		"all_attack_types":"All types", "sort_original":"Original order", "sort_energy_asc":"Energy: low to high", "sort_energy_desc":"Energy: high to low", "sort_damage_desc":"Damage: high to low", "sort_damage_asc":"Damage: low to high", "selected_first":"Selected first", "reset_filters":"Reset",
+		"title": "PLAKORO — Digital Move Cards", "setup_subtitle": "Choose one Pokémon and exactly four move cards for your physical tabletop game.", "pokemon": "Pokémon", "move_cards": "Move cards", "start_session": "Start Tabletop Session", "selected_count": "{current} / {max} selected", "used_cards": "Used cards: {cards}", "hide_info": "Hide info ▲", "show_info": "Show info ▼", "info_tooltip": "Hide or show the optional Pokémon / HP / weakness information.", "your_turn_short": "Turn {turn}  •  YOUR TURN", "opponent_turn_short": "Turn {turn}  •  OPPONENT TURN", "end_game": "End Game", "reduce_hp": "Reduce HP by 10", "restore_hp": "Restore HP by 10", "weakness": "Weakness:", "weakness_tooltip": "{type} weakness", "your_turn": "Turn {turn} — YOUR TURN: choose one move", "opponent_turn": "Turn {turn} — OPPONENT TURN: resolve the physical turn, then confirm when finished", "last_charakoro": "Last Charakoro: {result}", "roll_failed_ignored": "Enekoro insufficient — move failed; Charakoro effect ignored", "triggered": "Triggered: {effects}", "active_effect": "⚠ Active turn effect", "waiting_opponent": "WAITING FOR OPPONENT", "locked_last_turn": "LOCKED — used last turn", "locked_tooltip": "This move was used last turn and cannot be used this turn.", "opponent_finished": "Opponent Turn Finished", "roll_hint": "Roll Enekoro and Charakoro together on the physical table. The Enekoro requirement is validated first; only a successful move may trigger its Charakoro effect.", "cancel": "Cancel", "use_move": "Use Move", "resolve_roll": "Resolve Enekoro + Charakoro", "resolve_subtitle": "Enekoro is checked first. If it succeeds, select the Charakoro face from the same roll.", "enerkoro_failed": "Enekoro insufficient — move failed", "energy_succeeded": "Enekoro sufficient — continue", "select_face": "Enekoro succeeded — select Charakoro face", "card_stays_visible": "Check the move card while selecting the rolled face.", "back_to_energy": "Back to Enekoro check", "no_energy": "No Energy", "damage": "Damage {value}", "head_up": "Head Up", "head_down": "Head Down", "head_left": "Head Left", "head_right": "Head Right", "face_up": "Face Up", "face_down": "Face Down", "resolution_title": "Move Result", "result_total_damage": "Total damage", "result_effects": "Triggered effects", "result_active_effects": "Active turn effects", "result_no_effect": "No additional Charakoro effect", "result_failed": "Move failed — no damage or effects", "result_weakness_damage": "If Weakness applies: {value} total damage (+20)", "result_self_damage": "Apply to your Pokémon: {value} self-damage", "result_heal": "Apply to your Pokémon: heal {value} HP", "result_reduction": "Next opponent turn: reduce incoming attack damage by {value}", "result_immunity": "Next opponent turn: this Pokémon takes no attack damage", "close": "Close"
 	},
 	"es_ES": {
-		"title": "PLAKORO — Cartas digitales de movimientos", "setup_subtitle": "Elige un Pokémon y exactamente cuatro cartas de movimiento para tu partida física.", "pokemon": "Pokémon", "move_cards": "Cartas de movimiento", "start_session": "Iniciar sesión de mesa", "selected_count": "{current} / {max} seleccionadas", "used_cards": "Cartas usadas: {cards}", "hide_info": "Ocultar información ▲", "show_info": "Mostrar información ▼", "info_tooltip": "Oculta o muestra la información opcional de Pokémon, PS y debilidad.", "your_turn_short": "Turno {turn}  •  TU TURNO", "opponent_turn_short": "Turno {turn}  •  TURNO DEL OPONENTE", "end_game": "Finalizar partida", "reduce_hp": "Reducir PS en 10", "restore_hp": "Recuperar 10 PS", "weakness": "Debilidad:", "weakness_tooltip": "Debilidad a {type}", "your_turn": "Turno {turn} — TU TURNO: elige un movimiento", "opponent_turn": "Turno {turn} — TURNO DEL OPONENTE: resuelve el turno físico y confirma al terminar", "last_charakoro": "Último Charakoro: {result}", "roll_failed_ignored": "Enekoro insuficiente — el movimiento falló; se ignora el efecto Charakoro", "triggered": "Activado: {effects}", "active_effect": "⚠ Efecto de turno activo", "waiting_opponent": "ESPERANDO AL OPONENTE", "locked_last_turn": "BLOQUEADO — usado el turno anterior", "locked_tooltip": "Este movimiento se usó el turno anterior y no puede usarse este turno.", "opponent_finished": "Turno del oponente terminado", "roll_hint": "Lanza Enekoro y Charakoro juntos en la mesa. Primero se valida el requisito de Enekoro; solo un movimiento exitoso puede activar su efecto Charakoro.", "cancel": "Cancelar", "use_move": "Usar movimiento", "resolve_roll": "Resolver Enekoro + Charakoro", "resolve_subtitle": "Primero se comprueba Enekoro. Si tiene éxito, elige la cara de Charakoro de la misma tirada.", "enerkoro_failed": "Enekoro insuficiente — movimiento fallido", "select_face": "Enekoro exitoso — elige la cara de Charakoro", "no_energy": "Sin energía", "damage": "Daño {value}", "head_up": "Cabeza arriba", "head_down": "Cabeza abajo", "head_left": "Cabeza a la izquierda", "head_right": "Cabeza a la derecha", "face_up": "Cara arriba", "face_down": "Cara abajo", "resolution_title": "Resultado del movimiento", "result_total_damage": "Daño total", "result_effects": "Efectos activados", "result_active_effects": "Efectos de turno activos", "result_no_effect": "Sin efecto Charakoro adicional", "result_failed": "El movimiento falló: sin daño ni efectos", "result_weakness_damage": "Si se aplica Debilidad: {value} de daño total (+20)", "close": "Cerrar"
+		"all_attack_types":"Todos los tipos", "sort_original":"Orden original", "sort_energy_asc":"Energía: menor a mayor", "sort_energy_desc":"Energía: mayor a menor", "sort_damage_desc":"Daño: mayor a menor", "sort_damage_asc":"Daño: menor a mayor", "selected_first":"Seleccionadas primero", "reset_filters":"Restablecer",
+		"title": "PLAKORO — Cartas digitales de movimientos", "setup_subtitle": "Elige un Pokémon y exactamente cuatro cartas de movimiento para tu partida física.", "pokemon": "Pokémon", "move_cards": "Cartas de movimiento", "start_session": "Iniciar sesión de mesa", "selected_count": "{current} / {max} seleccionadas", "used_cards": "Cartas usadas: {cards}", "hide_info": "Ocultar información ▲", "show_info": "Mostrar información ▼", "info_tooltip": "Oculta o muestra la información opcional de Pokémon, PS y debilidad.", "your_turn_short": "Turno {turn}  •  TU TURNO", "opponent_turn_short": "Turno {turn}  •  TURNO DEL OPONENTE", "end_game": "Finalizar partida", "reduce_hp": "Reducir PS en 10", "restore_hp": "Recuperar 10 PS", "weakness": "Debilidad:", "weakness_tooltip": "Debilidad a {type}", "your_turn": "Turno {turn} — TU TURNO: elige un movimiento", "opponent_turn": "Turno {turn} — TURNO DEL OPONENTE: resuelve el turno físico y confirma al terminar", "last_charakoro": "Último Charakoro: {result}", "roll_failed_ignored": "Enekoro insuficiente — el movimiento falló; se ignora el efecto Charakoro", "triggered": "Activado: {effects}", "active_effect": "⚠ Efecto de turno activo", "waiting_opponent": "ESPERANDO AL OPONENTE", "locked_last_turn": "BLOQUEADO — usado el turno anterior", "locked_tooltip": "Este movimiento se usó el turno anterior y no puede usarse este turno.", "opponent_finished": "Turno del oponente terminado", "roll_hint": "Lanza Enekoro y Charakoro juntos en la mesa. Primero se valida el requisito de Enekoro; solo un movimiento exitoso puede activar su efecto Charakoro.", "cancel": "Cancelar", "use_move": "Usar movimiento", "resolve_roll": "Resolver Enekoro + Charakoro", "resolve_subtitle": "Primero se comprueba Enekoro. Si tiene éxito, elige la cara de Charakoro de la misma tirada.", "enerkoro_failed": "Enekoro insuficiente — movimiento fallido", "energy_succeeded": "Enekoro suficiente — continuar", "select_face": "Enekoro exitoso — elige la cara de Charakoro", "card_stays_visible": "Consulta la carta mientras eliges la cara obtenida.", "back_to_energy": "Volver a comprobar Enekoro", "no_energy": "Sin energía", "damage": "Daño {value}", "head_up": "Cabeza arriba", "head_down": "Cabeza abajo", "head_left": "Cabeza a la izquierda", "head_right": "Cabeza a la derecha", "face_up": "Cara arriba", "face_down": "Cara abajo", "resolution_title": "Resultado del movimiento", "result_total_damage": "Daño total", "result_effects": "Efectos activados", "result_active_effects": "Efectos de turno activos", "result_no_effect": "Sin efecto Charakoro adicional", "result_failed": "El movimiento falló: sin daño ni efectos", "result_weakness_damage": "Si se aplica Debilidad: {value} de daño total (+20)", "result_self_damage": "Aplica a tu Pokémon: {value} de daño propio", "result_heal": "Aplica a tu Pokémon: recupera {value} PS", "result_reduction": "Próximo turno rival: reduce el daño de ataque recibido en {value}", "result_immunity": "Próximo turno rival: este Pokémon no recibe daño de ataques", "close": "Cerrar"
 	},
 	"ja_JP": {
-		"title": "PLAKORO — デジタルわざカード", "setup_subtitle": "ポケモンを1匹選び、実際の卓上ゲームで使うわざカードを4枚選んでください。", "pokemon": "ポケモン", "move_cards": "わざカード", "start_session": "テーブルセッションを開始", "selected_count": "{current} / {max} 枚選択済み", "used_cards": "使用したカード：{cards}", "hide_info": "情報を隠す ▲", "show_info": "情報を表示 ▼", "info_tooltip": "ポケモン・HP・弱点の補助情報を表示または非表示にします。", "your_turn_short": "ターン {turn}  •  あなたのターン", "opponent_turn_short": "ターン {turn}  •  相手のターン", "end_game": "ゲーム終了", "reduce_hp": "HPを10減らす", "restore_hp": "HPを10回復", "weakness": "弱点：", "weakness_tooltip": "{type}弱点", "your_turn": "ターン {turn} — あなたのターン：わざを1つ選択", "opponent_turn": "ターン {turn} — 相手のターン：実物の盤面で処理し、完了後に確認してください", "last_charakoro": "直前のチャラコロ：{result}", "roll_failed_ignored": "エネコロ不足 — わざ失敗；チャラコロ効果は無効", "triggered": "発動：{effects}", "active_effect": "⚠ 発動中のターン効果", "waiting_opponent": "相手のターンを待っています", "locked_last_turn": "使用不可 — 前のターンに使用済み", "locked_tooltip": "このわざは前のターンに使用したため、今のターンは使用できません。", "opponent_finished": "相手のターン完了", "roll_hint": "実物の盤面でエネコロとチャラコロを同時に振ります。最初にエネコロ条件を確認し、わざが成功した場合のみチャラコロ効果を発動できます。", "cancel": "キャンセル", "use_move": "わざを使う", "resolve_roll": "エネコロ＋チャラコロ判定", "resolve_subtitle": "最初にエネコロを確認します。成功したら、同じ出目のチャラコロ面を選択してください。", "enerkoro_failed": "エネコロ不足 — わざ失敗", "select_face": "エネコロ成功 — チャラコロ面を選択", "no_energy": "エネルギーなし", "damage": "ダメージ {value}", "head_up": "頭が上", "head_down": "頭が下", "head_left": "頭が左", "head_right": "頭が右", "face_up": "顔が上", "face_down": "顔が下", "resolution_title": "わざの結果", "result_total_damage": "合計ダメージ", "result_effects": "発動した効果", "result_active_effects": "発動中のターン効果", "result_no_effect": "追加のCharakoro効果なし", "result_failed": "わざ失敗：ダメージ・効果なし", "result_weakness_damage": "弱点なら合計{value}ダメージ（+20）", "close": "閉じる"
+		"all_attack_types":"すべてのタイプ", "sort_original":"元の順番", "sort_energy_asc":"エネルギー：少ない順", "sort_energy_desc":"エネルギー：多い順", "sort_damage_desc":"ダメージ：高い順", "sort_damage_asc":"ダメージ：低い順", "selected_first":"選択済みを先頭", "reset_filters":"リセット",
+		"title": "PLAKORO — デジタルわざカード", "setup_subtitle": "ポケモンを1匹選び、実際の卓上ゲームで使うわざカードを4枚選んでください。", "pokemon": "ポケモン", "move_cards": "わざカード", "start_session": "テーブルセッションを開始", "selected_count": "{current} / {max} 枚選択済み", "used_cards": "使用したカード：{cards}", "hide_info": "情報を隠す ▲", "show_info": "情報を表示 ▼", "info_tooltip": "ポケモン・HP・弱点の補助情報を表示または非表示にします。", "your_turn_short": "ターン {turn}  •  あなたのターン", "opponent_turn_short": "ターン {turn}  •  相手のターン", "end_game": "ゲーム終了", "reduce_hp": "HPを10減らす", "restore_hp": "HPを10回復", "weakness": "弱点：", "weakness_tooltip": "{type}弱点", "your_turn": "ターン {turn} — あなたのターン：わざを1つ選択", "opponent_turn": "ターン {turn} — 相手のターン：実物の盤面で処理し、完了後に確認してください", "last_charakoro": "直前のチャラコロ：{result}", "roll_failed_ignored": "エネコロ不足 — わざ失敗；チャラコロ効果は無効", "triggered": "発動：{effects}", "active_effect": "⚠ 発動中のターン効果", "waiting_opponent": "相手のターンを待っています", "locked_last_turn": "使用不可 — 前のターンに使用済み", "locked_tooltip": "このわざは前のターンに使用したため、今のターンは使用できません。", "opponent_finished": "相手のターン完了", "roll_hint": "実物の盤面でエネコロとチャラコロを同時に振ります。最初にエネコロ条件を確認し、わざが成功した場合のみチャラコロ効果を発動できます。", "cancel": "キャンセル", "use_move": "わざを使う", "resolve_roll": "エネコロ＋チャラコロ判定", "resolve_subtitle": "最初にエネコロを確認します。成功したら、同じ出目のチャラコロ面を選択してください。", "enerkoro_failed": "エネコロ不足 — わざ失敗", "energy_succeeded": "エネコロ成功 — 続ける", "select_face": "エネコロ成功 — チャラコロ面を選択", "card_stays_visible": "わざカードを確認しながら出た面を選んでください。", "back_to_energy": "エネコロ確認に戻る", "no_energy": "エネルギーなし", "damage": "ダメージ {value}", "head_up": "頭が上", "head_down": "頭が下", "head_left": "頭が左", "head_right": "頭が右", "face_up": "顔が上", "face_down": "顔が下", "resolution_title": "わざの結果", "result_total_damage": "合計ダメージ", "result_effects": "発動した効果", "result_active_effects": "発動中のターン効果", "result_no_effect": "追加のCharakoro効果なし", "result_failed": "わざ失敗：ダメージ・効果なし", "result_weakness_damage": "弱点なら合計{value}ダメージ（+20）", "result_self_damage": "自分のポケモンに適用：反動ダメージ {value}", "result_heal": "自分のポケモンに適用：HPを{value}回復", "result_reduction": "相手の次のターン：受ける攻撃ダメージを{value}減らす", "result_immunity": "相手の次のターン：このポケモンは攻撃ダメージを受けない", "close": "閉じる"
 	},
 	"zh_TW": {
-		"title": "PLAKORO — 數位招式卡", "setup_subtitle": "選擇一隻 Pokémon 與四張招式卡，在實體桌遊中使用。", "pokemon": "Pokémon", "move_cards": "招式卡", "start_session": "開始桌遊輔助", "selected_count": "已選 {current} / {max} 張", "used_cards": "已使用的卡片：{cards}", "hide_info": "隱藏資訊 ▲", "show_info": "顯示資訊 ▼", "info_tooltip": "顯示或隱藏 Pokémon、HP 與弱點等輔助資訊。", "your_turn_short": "第 {turn} 回合  •  你的回合", "opponent_turn_short": "第 {turn} 回合  •  對手回合", "end_game": "結束遊戲", "reduce_hp": "HP 減少 10", "restore_hp": "HP 回復 10", "weakness": "弱點：", "weakness_tooltip": "弱點：{type}", "your_turn": "第 {turn} 回合 — 你的回合：選擇一個招式", "opponent_turn": "第 {turn} 回合 — 對手回合：在實體桌面完成操作後確認結束", "last_charakoro": "上次 Charakoro：{result}", "roll_failed_ignored": "Enekoro 不足 — 招式失敗；忽略 Charakoro 效果", "triggered": "已觸發：{effects}", "active_effect": "⚠ 生效中的回合效果", "waiting_opponent": "等待對手回合", "locked_last_turn": "無法使用 — 上回合已使用", "locked_tooltip": "此招式上回合已使用，本回合無法再次使用。", "opponent_finished": "對手回合結束", "roll_hint": "請在實體桌面同時擲出 Enekoro 與 Charakoro。先確認 Enekoro 是否符合需求；招式成功後才能觸發 Charakoro 效果。", "cancel": "取消", "use_move": "使用招式", "resolve_roll": "判定 Enekoro + Charakoro", "resolve_subtitle": "先確認 Enekoro；若成功，請選擇同一次擲骰的 Charakoro 骰面。", "enerkoro_failed": "Enekoro 不足 — 招式失敗", "select_face": "Enekoro 成功 — 選擇 Charakoro 骰面", "no_energy": "不需能量", "damage": "傷害 {value}", "head_up": "頭部朝上", "head_down": "頭部朝下", "head_left": "頭部朝左", "head_right": "頭部朝右", "face_up": "正面朝上", "face_down": "反面朝上", "resolution_title": "招式結果", "result_total_damage": "總傷害", "result_effects": "觸發效果", "result_active_effects": "生效中的回合效果", "result_no_effect": "沒有額外 Charakoro 效果", "result_failed": "招式失敗：沒有傷害或效果", "result_weakness_damage": "若命中弱點：總傷害 {value}（+20）", "close": "關閉"
+		"all_attack_types":"全部屬性", "sort_original":"原始順序", "sort_energy_asc":"能量：低到高", "sort_energy_desc":"能量：高到低", "sort_damage_desc":"傷害：高到低", "sort_damage_asc":"傷害：低到高", "selected_first":"已選置頂", "reset_filters":"重設",
+		"title": "PLAKORO — 數位招式卡", "setup_subtitle": "選擇一隻 Pokémon 與四張招式卡，在實體桌遊中使用。", "pokemon": "Pokémon", "move_cards": "招式卡", "start_session": "開始桌遊輔助", "selected_count": "已選 {current} / {max} 張", "used_cards": "已使用的卡片：{cards}", "hide_info": "隱藏資訊 ▲", "show_info": "顯示資訊 ▼", "info_tooltip": "顯示或隱藏 Pokémon、HP 與弱點等輔助資訊。", "your_turn_short": "第 {turn} 回合  •  你的回合", "opponent_turn_short": "第 {turn} 回合  •  對手回合", "end_game": "結束遊戲", "reduce_hp": "HP 減少 10", "restore_hp": "HP 回復 10", "weakness": "弱點：", "weakness_tooltip": "弱點：{type}", "your_turn": "第 {turn} 回合 — 你的回合：選擇一個招式", "opponent_turn": "第 {turn} 回合 — 對手回合：在實體桌面完成操作後確認結束", "last_charakoro": "上次 Charakoro：{result}", "roll_failed_ignored": "Enekoro 不足 — 招式失敗；忽略 Charakoro 效果", "triggered": "已觸發：{effects}", "active_effect": "⚠ 生效中的回合效果", "waiting_opponent": "等待對手回合", "locked_last_turn": "無法使用 — 上回合已使用", "locked_tooltip": "此招式上回合已使用，本回合無法再次使用。", "opponent_finished": "對手回合結束", "roll_hint": "請在實體桌面同時擲出 Enekoro 與 Charakoro。先確認 Enekoro 是否符合需求；招式成功後才能觸發 Charakoro 效果。", "cancel": "取消", "use_move": "使用招式", "resolve_roll": "判定 Enekoro + Charakoro", "resolve_subtitle": "先確認 Enekoro；若成功，請選擇同一次擲骰的 Charakoro 骰面。", "enerkoro_failed": "Enekoro 不足 — 招式失敗", "energy_succeeded": "Enekoro 足夠 — 繼續", "select_face": "Enekoro 成功 — 選擇 Charakoro 骰面", "card_stays_visible": "請對照招式卡並選擇擲出的骰面。", "back_to_energy": "返回 Enekoro 判定", "no_energy": "不需能量", "damage": "傷害 {value}", "head_up": "頭部朝上", "head_down": "頭部朝下", "head_left": "頭部朝左", "head_right": "頭部朝右", "face_up": "正面朝上", "face_down": "反面朝上", "resolution_title": "招式結果", "result_total_damage": "總傷害", "result_effects": "觸發效果", "result_active_effects": "生效中的回合效果", "result_no_effect": "沒有額外 Charakoro 效果", "result_failed": "招式失敗：沒有傷害或效果", "result_weakness_damage": "若命中弱點：總傷害 {value}（+20）", "result_self_damage": "套用到自己的 Pokémon：自傷 {value}", "result_heal": "套用到自己的 Pokémon：回復 HP {value}", "result_reduction": "對手下一回合：受到的攻擊傷害減少 {value}", "result_immunity": "對手下一回合：這隻 Pokémon 不會受到攻擊傷害", "close": "關閉"
 	}
 }
 
@@ -61,6 +65,7 @@ var pending_opponent_reminders: Array[Dictionary] = []
 var pending_self_reminders: Array[Dictionary] = []
 var last_kyokoro_result := ""
 var last_resolved_effects: Array[String] = []
+var last_resolution_details: Dictionary = {}
 
 var root_margin: MarginContainer
 var page: VBoxContainer
@@ -76,6 +81,12 @@ var pokemon_weakness_row: HBoxContainer
 var selection_count_label: Label
 var moves_grid: GridContainer
 var start_button: Button
+var move_type_filter: OptionButton
+var move_sort_option: OptionButton
+var selected_first_toggle: CheckButton
+var current_move_type_filter := ""
+var current_move_sort := "original"
+var selected_moves_first := true
 var hp_label: Label
 var phase_label: Label
 var reminder_box: VBoxContainer
@@ -317,7 +328,7 @@ func _build_shell() -> void:
 	var page_padding := MarginContainer.new()
 	page_padding.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page_padding.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	page_padding.add_theme_constant_override("margin_right",14)
+	page_padding.add_theme_constant_override("margin_right",40)
 	viewport_scroll.add_child(page_padding)
 	page = VBoxContainer.new()
 	page.name = "Page"
@@ -381,9 +392,14 @@ func _show_setup_page() -> void:
 	var move_header := HBoxContainer.new(); right.add_child(move_header)
 	var move_title := Label.new(); move_title.text = _tr_ui("move_cards"); move_title.add_theme_font_size_override("font_size",20); move_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL; move_header.add_child(move_title)
 	selection_count_label = Label.new(); move_header.add_child(selection_count_label)
+	var filter_bar := HBoxContainer.new(); filter_bar.add_theme_constant_override("separation",8); right.add_child(filter_bar)
+	move_type_filter = OptionButton.new(); move_type_filter.custom_minimum_size = Vector2(155,42); move_type_filter.item_selected.connect(_on_move_type_filter_selected); filter_bar.add_child(move_type_filter)
+	move_sort_option = OptionButton.new(); move_sort_option.custom_minimum_size = Vector2(205,42); _populate_move_sort_options(); move_sort_option.item_selected.connect(_on_move_sort_selected); filter_bar.add_child(move_sort_option)
+	selected_first_toggle = CheckButton.new(); selected_first_toggle.text = _tr_ui("selected_first"); selected_first_toggle.button_pressed = selected_moves_first; selected_first_toggle.toggled.connect(_on_selected_first_toggled); filter_bar.add_child(selected_first_toggle)
+	var reset_filters := Button.new(); reset_filters.text = _tr_ui("reset_filters"); reset_filters.custom_minimum_size = Vector2(90,42); reset_filters.pressed.connect(_reset_move_filters); filter_bar.add_child(reset_filters)
 	var scroll := ScrollContainer.new(); scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; _configure_touch_scrollbar(scroll); right.add_child(scroll)
 	var scroll_content_margin := MarginContainer.new(); scroll_content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll_content_margin.add_theme_constant_override("margin_right",44); scroll.add_child(scroll_content_margin)
-	moves_grid = GridContainer.new(); moves_grid.columns = 1; moves_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL; moves_grid.add_theme_constant_override("v_separation",14); scroll_content_margin.add_child(moves_grid)
+	moves_grid = GridContainer.new(); moves_grid.columns = _setup_move_columns(); moves_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL; moves_grid.add_theme_constant_override("h_separation",12); moves_grid.add_theme_constant_override("v_separation",12); scroll_content_margin.add_child(moves_grid)
 	start_button = Button.new(); start_button.text = _tr_ui("start_session"); start_button.custom_minimum_size = Vector2(0,64); start_button.add_theme_font_size_override("font_size",20); start_button.add_theme_color_override("font_color",Color.WHITE); start_button.add_theme_color_override("font_hover_color",Color.WHITE); start_button.add_theme_stylebox_override("normal",_ui_button_style(Color("167a67"),Color("56d6b9"),2)); start_button.add_theme_stylebox_override("hover",_ui_button_style(Color("1d9a7f"),Color("8cf4d9"),3)); start_button.add_theme_stylebox_override("pressed",_ui_button_style(Color("116052"),Color("b2ffec"),3)); start_button.add_theme_stylebox_override("disabled",_ui_button_style(Color("111a20"),Color("2b3a42"),1)); start_button.pressed.connect(_start_session); right.add_child(start_button)
 	if pokemon_docs.size() > 0:
 		var desired_id := String(selected_pokemon.get("id", "")); var select_index := 0
@@ -417,6 +433,7 @@ func _select_pokemon(doc: Dictionary) -> void:
 	pokemon_type_icon.tooltip_text = _type_name(setup_type)
 	var image_path := "res://assets/pokemon/images/%s.png" % String(doc.get("id","")); pokemon_preview.texture = load(image_path) if ResourceLoader.exists(image_path) else null
 	_refresh_setup_weakness(doc)
+	_refresh_move_type_filter()
 	_rebuild_move_choices()
 
 func _refresh_setup_weakness(doc: Dictionary) -> void:
@@ -445,14 +462,108 @@ func _refresh_setup_weakness(doc: Dictionary) -> void:
 		bonus.add_theme_color_override("font_color", Color("ffd47a"))
 		pokemon_weakness_row.add_child(bonus)
 
+
+func _populate_move_sort_options() -> void:
+	move_sort_option.clear()
+	for item in [
+		["sort_original", "original"],
+		["sort_energy_asc", "energy_asc"],
+		["sort_energy_desc", "energy_desc"],
+		["sort_damage_desc", "damage_desc"],
+		["sort_damage_asc", "damage_asc"]
+	]:
+		move_sort_option.add_item(_tr_ui(String(item[0])))
+		move_sort_option.set_item_metadata(move_sort_option.item_count - 1, String(item[1]))
+	for i in move_sort_option.item_count:
+		if String(move_sort_option.get_item_metadata(i)) == current_move_sort: move_sort_option.select(i); break
+
+
+func _refresh_move_type_filter() -> void:
+	if move_type_filter == null: return
+	var available_types: Array[String] = []
+	for raw_id in selected_pokemon.get("available_move_card_ids", []) as Array:
+		var move_id := String(raw_id)
+		if not move_docs.has(move_id): continue
+		var type_id := String((move_docs[move_id] as Dictionary).get("attack_type", "normal"))
+		if type_id not in available_types: available_types.append(type_id)
+	available_types.sort_custom(func(a: String, b: String): return _type_name(a) < _type_name(b))
+	if not current_move_type_filter.is_empty() and current_move_type_filter not in available_types: current_move_type_filter = ""
+	move_type_filter.clear()
+	move_type_filter.add_item(_tr_ui("all_attack_types")); move_type_filter.set_item_metadata(0, "")
+	for type_id in available_types:
+		move_type_filter.add_item(_type_name(type_id)); move_type_filter.set_item_metadata(move_type_filter.item_count - 1, type_id)
+	for i in move_type_filter.item_count:
+		if String(move_type_filter.get_item_metadata(i)) == current_move_type_filter: move_type_filter.select(i); break
+
+
+func _on_move_type_filter_selected(index: int) -> void:
+	current_move_type_filter = String(move_type_filter.get_item_metadata(index))
+	_rebuild_move_choices()
+
+
+func _on_move_sort_selected(index: int) -> void:
+	current_move_sort = String(move_sort_option.get_item_metadata(index))
+	_rebuild_move_choices()
+
+
+func _on_selected_first_toggled(enabled: bool) -> void:
+	selected_moves_first = enabled
+	_rebuild_move_choices()
+
+
+func _reset_move_filters() -> void:
+	current_move_type_filter = ""
+	current_move_sort = "original"
+	selected_moves_first = true
+	_refresh_move_type_filter()
+	_populate_move_sort_options()
+	selected_first_toggle.set_pressed_no_signal(true)
+	_rebuild_move_choices()
+
+
+func _move_energy_total(move_doc: Dictionary) -> int:
+	var total := 0
+	for raw in move_doc.get("energy_cost", []) as Array: total += int((raw as Dictionary).get("count", 0))
+	return total
+
+
+func _sort_move_ids(ids: Array, original_positions: Dictionary) -> void:
+	ids.sort_custom(func(a_raw, b_raw):
+		var a := String(a_raw); var b := String(b_raw)
+		if selected_moves_first:
+			var a_selected := a in selected_move_ids; var b_selected := b in selected_move_ids
+			if a_selected != b_selected: return a_selected
+		var a_doc: Dictionary = move_docs[a]; var b_doc: Dictionary = move_docs[b]
+		match current_move_sort:
+			"energy_asc", "energy_desc":
+				var av := _move_energy_total(a_doc); var bv := _move_energy_total(b_doc)
+				if av != bv: return av < bv if current_move_sort == "energy_asc" else av > bv
+			"damage_asc", "damage_desc":
+				var a_damage = a_doc.get("printed_damage", null); var b_damage = b_doc.get("printed_damage", null)
+				if a_damage == null and b_damage != null: return false
+				if a_damage != null and b_damage == null: return true
+				if a_damage != null and b_damage != null and int(a_damage) != int(b_damage): return int(a_damage) < int(b_damage) if current_move_sort == "damage_asc" else int(a_damage) > int(b_damage)
+		return int(original_positions.get(a, 0)) < int(original_positions.get(b, 0))
+	)
+
 func _rebuild_move_choices() -> void:
 	for child in moves_grid.get_children(): moves_grid.remove_child(child); child.queue_free()
 	move_checkboxes.clear()
 	var viewport_width := get_viewport_rect().size.x
 	var setup_left_width := clampf(viewport_width * 0.24, 270.0, 360.0)
-	var estimated_card_width := maxf(760.0, viewport_width - setup_left_width - 120.0)
-	var setup_card_height := clampf(estimated_card_width * 379.0 / 760.0, 379.0, 430.0)
-	var ids: Array = selected_pokemon.get("available_move_card_ids",[]) as Array
+	var setup_columns := _setup_move_columns()
+	var available_cards_width := maxf(330.0, viewport_width - setup_left_width - 120.0)
+	var estimated_card_width := (available_cards_width - float(maxi(0, setup_columns - 1)) * 12.0) / float(setup_columns)
+	var setup_card_height := clampf(estimated_card_width * 178.0 / 300.0, 190.0, 260.0)
+	var source_ids: Array = selected_pokemon.get("available_move_card_ids",[]) as Array
+	var ids: Array = []
+	var original_positions := {}
+	for i in source_ids.size():
+		var move_id := String(source_ids[i]); original_positions[move_id] = i
+		if not move_docs.has(move_id): continue
+		if not current_move_type_filter.is_empty() and String((move_docs[move_id] as Dictionary).get("attack_type", "normal")) != current_move_type_filter: continue
+		ids.append(move_id)
+	_sort_move_ids(ids, original_positions)
 	for raw_id in ids:
 		var move_id := String(raw_id)
 		if not move_docs.has(move_id): continue
@@ -463,14 +574,14 @@ func _rebuild_move_choices() -> void:
 		check.toggle_mode = true
 		check.custom_minimum_size = Vector2(0, setup_card_height)
 		check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		check.tooltip_text = "%s · %s" % [_move_name(move_doc), _type_name(String(move_doc.get("attack_type", "normal")))]
+		check.tooltip_text = ""
 		check.add_theme_stylebox_override("normal", _transparent_card_button_style(Color("43576b"), 2))
 		check.add_theme_stylebox_override("hover", _transparent_card_button_style(Color("8fc7ff"), 3))
 		check.add_theme_stylebox_override("pressed", _transparent_card_button_style(Color("56d6b9"), 5))
 		check.add_theme_stylebox_override("focus", _transparent_card_button_style(Color("a8f5e5"), 4))
 		check.toggled.connect(_on_move_toggled.bind(move_id))
 		moves_grid.add_child(check)
-		var formal_card := _build_real_move_card(move_id, move_doc, true)
+		var formal_card := _build_real_move_card(move_id, move_doc, false, true)
 		formal_card.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		formal_card.offset_left = 7.0
 		formal_card.offset_top = 7.0
@@ -478,6 +589,7 @@ func _rebuild_move_choices() -> void:
 		formal_card.offset_bottom = -7.0
 		check.add_child(formal_card)
 		move_checkboxes[move_id] = check
+		check.set_pressed_no_signal(move_id in selected_move_ids)
 	_update_selection_state()
 
 func _add_setup_effect_summary(card: VBoxContainer, move_id: String, move_doc: Dictionary) -> void:
@@ -529,6 +641,7 @@ func _on_move_toggled(enabled: bool, move_id: String) -> void:
 		selected_move_ids.append(move_id)
 	else: selected_move_ids.erase(move_id)
 	_update_selection_state()
+	if selected_moves_first: call_deferred("_rebuild_move_choices")
 
 func _update_selection_state() -> void:
 	if selection_count_label: selection_count_label.text = _tr_ui("selected_count", {"current":selected_move_ids.size(),"max":MAX_MOVES})
@@ -537,7 +650,7 @@ func _update_selection_state() -> void:
 func _start_session() -> void:
 	if selected_move_ids.size() != MAX_MOVES: return
 	current_hp = int(selected_pokemon.get("max_hp",0)); previous_move_id = ""; turn_number = 1; phase = "player"
-	pending_opponent_reminders.clear(); pending_self_reminders.clear(); last_kyokoro_result = ""; last_resolved_effects.clear(); _show_play_page()
+	pending_opponent_reminders.clear(); pending_self_reminders.clear(); last_kyokoro_result = ""; last_resolved_effects.clear(); last_resolution_details.clear(); _show_play_page()
 
 func _show_play_page() -> void:
 	showing_play_page = true
@@ -817,7 +930,7 @@ func _create_move_card(move_id: String, move_doc: Dictionary) -> Control:
 	return button
 
 
-func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool) -> Control:
+func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool, compact_selection := false) -> Control:
 	# This layout is intentionally derived from the original V2.2
 	# PlakoroMoveButton.gd renderer and uses the same background.png asset.
 	var root := Control.new()
@@ -841,28 +954,28 @@ func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool) -
 	_set_fractional_rect(sheen, Vector4(0.0,0.0,1.0,0.49))
 	root.add_child(sheen)
 
-	var attack_icon := _energy_icon(String(move_doc.get("attack_type","normal")), 70 if large else 50)
+	var attack_icon := _energy_icon(String(move_doc.get("attack_type","normal")), 70 if large else (42 if compact_selection else 50))
 	_set_fractional_rect(attack_icon, Vector4(0.025,0.05,0.145,0.34))
 	root.add_child(attack_icon)
 
-	_add_card_label(root, _pokemon_name(selected_pokemon), Vector4(0.16,0.035,0.68,0.17), 20 if large else 16, HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
-	_add_card_label(root, _move_name(move_doc), Vector4(0.14,0.15,0.80,0.43), 38 if large else 30, HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 5 if large else 3)
+	_add_card_label(root, _pokemon_name(selected_pokemon), Vector4(0.16,0.035,0.68,0.17), 20 if large else (14 if compact_selection else 16), HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
+	_add_card_label(root, _move_name(move_doc), Vector4(0.14,0.15,0.80,0.43), 38 if large else (26 if compact_selection else 30), HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 5 if large else 3)
 	var printed_damage = move_doc.get("printed_damage", null)
 	var damage_value := _format_damage_value(printed_damage)
-	var damage_label := _add_card_label(root, damage_value, Vector4(0.79,0.11,0.98,0.44), 48 if large else 42, HORIZONTAL_ALIGNMENT_CENTER, Color(1.0,0.25,0.20), 5 if large else 4, Color.WHITE)
+	var damage_label := _add_card_label(root, damage_value, Vector4(0.79,0.11,0.98,0.44), 48 if large else (36 if compact_selection else 42), HORIZONTAL_ALIGNMENT_CENTER, Color(1.0,0.25,0.20), 5 if large else 4, Color.WHITE)
 	if printed_damage != null:
 		damage_label.add_theme_font_override("font", FONT_NINJA_ATTACK)
-	_add_card_energy_icons(root, move_doc, large)
-	_add_card_effect_rows(root, move_id, move_doc, large)
+	_add_card_energy_icons(root, move_doc, large, compact_selection)
+	_add_card_effect_rows(root, move_id, move_doc, large, compact_selection)
 
 	var source: Dictionary = move_doc.get("source", {}) as Dictionary
 	var card_code := String(source.get("card_code", "")).strip_edges()
-	if not card_code.is_empty():
+	if not card_code.is_empty() and not compact_selection:
 		_add_card_label(root, card_code, Vector4(0.76,0.87,0.96,0.98), 11 if large else 8, HORIZONTAL_ALIGNMENT_RIGHT, Color(0.84,0.87,0.92,0.92), 1)
 	return root
 
 
-func _add_card_energy_icons(parent: Control, move_doc: Dictionary, large: bool) -> void:
+func _add_card_energy_icons(parent: Control, move_doc: Dictionary, large: bool, compact_selection := false) -> void:
 	var costs := HBoxContainer.new()
 	costs.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	costs.alignment = BoxContainer.ALIGNMENT_END
@@ -879,10 +992,10 @@ func _add_card_energy_icons(parent: Control, move_doc: Dictionary, large: bool) 
 		var cost: Dictionary = raw as Dictionary
 		var count := maxi(0, int(cost.get("count",0)))
 		for _i in range(count):
-			costs.add_child(_energy_icon(String(cost.get("energy_type","normal")), 30 if large else 24))
+			costs.add_child(_energy_icon(String(cost.get("energy_type","normal")), 30 if large else (20 if compact_selection else 24)))
 
 
-func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionary, large: bool) -> void:
+func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionary, large: bool, compact_selection := false) -> void:
 	var outcomes := _move_outcome_rules(move_doc)
 	var move_effect := _move_effect_text(move_id, move_doc)
 	if not move_effect.is_empty():
@@ -906,7 +1019,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		move_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		move_effect_label.max_lines_visible = 2
 		move_effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		move_effect_label.add_theme_font_size_override("font_size", 25 if large else 20)
+		move_effect_label.add_theme_font_size_override("font_size", 25 if large else (15 if compact_selection else 20))
 		var use_dark_text := energy_color.get_luminance() >= 0.46
 		var effect_font_color := Color("07131d") if use_dark_text else Color.WHITE
 		var effect_outline_color := Color(1.0,1.0,1.0,0.42) if use_dark_text else Color(0.0,0.0,0.0,0.94)
@@ -920,7 +1033,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 	effects.add_theme_constant_override("separation", 6 if large else 3)
 	# Keep both the Charakoro face icons and their text fully inside the
 	# lower black card area, whether or not the card has a Move Effect strip.
-	_set_fractional_rect(effects, Vector4(0.025,0.61,0.965,0.98))
+	_set_fractional_rect(effects, Vector4(0.025,0.57 if compact_selection else 0.61,0.965,0.98))
 	parent.add_child(effects)
 	if outcomes.is_empty():
 		if move_effect.is_empty():
@@ -930,7 +1043,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 			description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			description.max_lines_visible = 5
 			description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-			description.add_theme_font_size_override("font_size", 25 if large else 18)
+			description.add_theme_font_size_override("font_size", 25 if large else (15 if compact_selection else 18))
 			description.add_theme_color_override("font_color", Color.WHITE)
 			description.add_theme_color_override("font_outline_color", Color(0.02,0.03,0.05,0.95))
 			description.add_theme_constant_override("outline_size", 2)
@@ -943,7 +1056,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		var row := HBoxContainer.new()
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.custom_minimum_size.y = 32.0 if large else 24.0
+		row.custom_minimum_size.y = 32.0 if large else (18.0 if compact_selection else 24.0)
 		row.add_theme_constant_override("separation", 9 if large else 5)
 		effects.add_child(row)
 
@@ -959,7 +1072,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 			icons.add_theme_constant_override("v_separation", 2)
 			row.add_child(icons)
 			for raw_orientation in orientations.slice(0,6):
-				icons.add_child(_kyokoro_icon(String(raw_orientation), 32 if large else 24))
+				icons.add_child(_kyokoro_icon(String(raw_orientation), 32 if large else (20 if compact_selection else 24)))
 
 		var line := Label.new()
 		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -968,9 +1081,11 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		line.text = _localized_outcome_text(move_id, move_doc, i, outcome)
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		line.max_lines_visible = 4 if large else (3 if outcomes.size() <= 2 else 2)
+		line.max_lines_visible = 4 if large else (3 if compact_selection else (3 if outcomes.size() <= 2 else 2))
 		line.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		line.add_theme_font_size_override("font_size", 25 if large else 20)
+		var compact_font_size := 15 if outcomes.size() <= 1 else 13
+		if compact_selection and line.text.length() > 115: compact_font_size = 13
+		line.add_theme_font_size_override("font_size", 25 if large else (compact_font_size if compact_selection else 20))
 		line.add_theme_color_override("font_color", Color.WHITE)
 		line.add_theme_color_override("font_outline_color", Color(0.02,0.03,0.05,0.95))
 		line.add_theme_constant_override("outline_size", 2)
@@ -996,33 +1111,81 @@ func _open_move_popup(move_id: String) -> void:
 	margin.add_theme_constant_override("margin_top",12)
 	margin.add_theme_constant_override("margin_bottom",12)
 	popup.add_child(margin)
-	var content := VBoxContainer.new()
-	content.add_theme_constant_override("separation",10)
+	var content := HBoxContainer.new()
+	content.add_theme_constant_override("separation",16)
 	margin.add_child(content)
 	var preview := _build_real_move_card(move_id, move_doc, true)
 	preview.custom_minimum_size = Vector2(760,379)
 	content.add_child(preview)
+	var decision := VBoxContainer.new()
+	decision.custom_minimum_size = Vector2(330, 0)
+	decision.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	decision.add_theme_constant_override("separation",10)
+	content.add_child(decision)
+	_build_energy_step(decision, popup, move_id, move_doc)
+	_show_popup_at_size(popup, Vector2i(1145, 425))
+
+
+func _build_energy_step(decision: VBoxContainer, popup: PopupPanel, move_id: String, move_doc: Dictionary) -> void:
+	_clear_container(decision)
+	var title := Label.new()
+	title.text = _tr_ui("resolve_roll")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 22)
+	decision.add_child(title)
 	var hint := Label.new()
 	hint.text = _tr_ui("roll_hint")
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.modulate = Color(0.78,0.82,0.88)
-	content.add_child(hint)
-	var actions := HBoxContainer.new()
-	actions.alignment = BoxContainer.ALIGNMENT_CENTER
-	actions.add_theme_constant_override("separation",14)
-	content.add_child(actions)
+	decision.add_child(hint)
+	var spacer := Control.new(); spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL; decision.add_child(spacer)
+	var failed := Button.new()
+	failed.text = _tr_ui("enerkoro_failed")
+	failed.custom_minimum_size = Vector2(0, 52)
+	failed.pressed.connect(func(): popup.hide(); _finalize_move_use(move_id, "ENEKORO_FAILED", []))
+	decision.add_child(failed)
+	var success := Button.new()
+	success.text = _tr_ui("energy_succeeded")
+	success.custom_minimum_size = Vector2(0, 52)
+	success.add_theme_stylebox_override("normal", _ui_button_style(Color("167a67"), Color("56d6b9"), 2))
+	success.pressed.connect(func():
+		var outcomes := _move_outcome_rules(move_doc)
+		if outcomes.is_empty():
+			popup.hide()
+			_finalize_move_use(move_id, "", [])
+		else:
+			_build_charakoro_step(decision, popup, move_id, move_doc)
+	)
+	decision.add_child(success)
 	var cancel_button := Button.new()
 	cancel_button.text = _tr_ui("cancel")
-	cancel_button.custom_minimum_size = Vector2(180,52)
+	cancel_button.custom_minimum_size = Vector2(0,46)
 	cancel_button.pressed.connect(popup.hide)
-	actions.add_child(cancel_button)
-	var use_button := Button.new()
-	use_button.text = _tr_ui("use_move")
-	use_button.custom_minimum_size = Vector2(180,52)
-	use_button.pressed.connect(func(): popup.hide(); _confirm_use_move(move_id))
-	actions.add_child(use_button)
-	_show_popup_at_size(popup, Vector2i(820, 535))
+	decision.add_child(cancel_button)
+
+
+func _build_charakoro_step(decision: VBoxContainer, popup: PopupPanel, move_id: String, move_doc: Dictionary) -> void:
+	_clear_container(decision)
+	var title := Label.new(); title.text = _tr_ui("select_face"); title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; title.add_theme_font_size_override("font_size", 20); decision.add_child(title)
+	var subtitle := Label.new(); subtitle.text = _tr_ui("card_stays_visible"); subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; subtitle.modulate = Color("b8c7d8"); decision.add_child(subtitle)
+	var grid := GridContainer.new(); grid.columns = 2; grid.add_theme_constant_override("h_separation",8); grid.add_theme_constant_override("v_separation",8); decision.add_child(grid)
+	for orientation in ["HEAD_UP","HEAD_DOWN","HEAD_LEFT","HEAD_RIGHT","FACE_UP","FACE_DOWN"]:
+		var button := Button.new()
+		button.custom_minimum_size = Vector2(155, 58)
+		button.text = _orientation_display_name(orientation)
+		button.icon = _kyokoro_button_texture(orientation, 38)
+		button.expand_icon = false
+		button.clip_text = true
+		button.pressed.connect(_on_kyokoro_choice.bind(popup, move_id, move_doc, orientation))
+		grid.add_child(button)
+	var back := Button.new(); back.text = _tr_ui("back_to_energy"); back.custom_minimum_size = Vector2(0,44); back.pressed.connect(_build_energy_step.bind(decision, popup, move_id, move_doc)); decision.add_child(back)
+
+
+func _clear_container(container: Container) -> void:
+	for child in container.get_children():
+		container.remove_child(child)
+		child.queue_free()
 
 
 func _confirm_use_move(move_id: String) -> void:
@@ -1129,6 +1292,7 @@ func _finalize_move_use(move_id: String, orientation: String, matched: Array[Dic
 	pending_opponent_reminders.clear()
 	last_kyokoro_result = orientation
 	last_resolved_effects.clear()
+	last_resolution_details = {}
 	if not move_failed:
 		var fixed_move_effect := _move_effect_text(move_id, move_doc)
 		if not fixed_move_effect.is_empty():
@@ -1148,6 +1312,8 @@ func _finalize_move_use(move_id: String, orientation: String, matched: Array[Dic
 			if _effect_targets_opponent_next_turn(raw): pending_opponent_reminders.append(reminder)
 			if _effect_targets_self_next_turn(raw): pending_self_reminders.append(reminder)
 	var total_damage: Variant = 0 if move_failed else _calculate_total_damage(move_doc, matched)
+	if not move_failed:
+		last_resolution_details = _calculate_resolution_details(move_doc, matched)
 	previous_move_id = move_id
 	phase = "opponent"
 	_show_play_page()
@@ -1177,6 +1343,34 @@ func _calculate_total_damage(move_doc: Dictionary, matched: Array[Dictionary]) -
 					has_known_total = false
 	return int(round(total)) if has_known_total else null
 
+
+func _calculate_resolution_details(move_doc: Dictionary, matched: Array[Dictionary]) -> Dictionary:
+	var details := {"self_damage":0, "self_heal":0, "incoming_reduction":0, "incoming_immunity":false}
+	for raw_action in move_doc.get("base_actions", []) as Array:
+		_accumulate_resolution_action(details, raw_action as Dictionary)
+	for item in matched:
+		var outcome: Dictionary = item.get("outcome", {}) as Dictionary
+		for raw_action in outcome.get("actions", []) as Array:
+			_accumulate_resolution_action(details, raw_action as Dictionary)
+	return details
+
+
+func _accumulate_resolution_action(details: Dictionary, action: Dictionary) -> void:
+	var opcode := String(action.get("opcode", ""))
+	var args: Dictionary = action.get("args", {}) as Dictionary
+	var target := String(args.get("target", ""))
+	var amount := int(round(float(args.get("amount", 0))))
+	match opcode:
+		"damage.recoil": details["self_damage"] = int(details.get("self_damage", 0)) + absi(amount)
+		"damage.create", "damage.add":
+			if target == "self": details["self_damage"] = int(details.get("self_damage", 0)) + absi(amount)
+		"hp.restore":
+			if target == "self": details["self_heal"] = int(details.get("self_heal", 0)) + absi(amount)
+		"incoming_damage.modify":
+			if target == "self" and amount < 0: details["incoming_reduction"] = int(details.get("incoming_reduction", 0)) + absi(amount)
+		"incoming_damage.immunity":
+			if target == "self" or target.is_empty(): details["incoming_immunity"] = true
+
 func _show_move_result_popup(move_id: String, total_damage: Variant, move_failed: bool) -> void:
 	if not move_docs.has(move_id): return
 	var popup := PopupPanel.new()
@@ -1200,7 +1394,11 @@ func _show_move_result_popup(move_id: String, total_damage: Variant, move_failed
 	var content := VBoxContainer.new()
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 11)
-	result_scroll.add_child(content)
+	var result_content_margin := MarginContainer.new()
+	result_content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	result_content_margin.add_theme_constant_override("margin_right", 38)
+	result_scroll.add_child(result_content_margin)
+	result_content_margin.add_child(content)
 	var title := Label.new(); title.text = _tr_ui("resolution_title"); title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; title.add_theme_font_size_override("font_size", 26); content.add_child(title)
 	var move_name := Label.new(); move_name.text = _move_name(move_docs[move_id]); move_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; move_name.add_theme_font_size_override("font_size", 21); move_name.add_theme_color_override("font_color", Color("a9c8e8")); content.add_child(move_name)
 	if move_failed:
@@ -1210,30 +1408,37 @@ func _show_move_result_popup(move_id: String, total_damage: Variant, move_failed
 		var damage := Label.new(); damage.text = _format_damage_value(total_damage); damage.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; damage.add_theme_font_override("font", FONT_NINJA_ATTACK); damage.add_theme_font_size_override("font_size", 58); damage.add_theme_color_override("font_color", Color("ff5548")); damage.add_theme_color_override("font_outline_color", Color.WHITE); damage.add_theme_constant_override("outline_size", 2); content.add_child(damage)
 		if total_damage != null and int(total_damage) > 0:
 			var weakness_damage := Label.new(); weakness_damage.text = _tr_ui("result_weakness_damage", {"value":int(total_damage) + 20}); weakness_damage.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; weakness_damage.add_theme_font_size_override("font_size", 17); weakness_damage.add_theme_color_override("font_color", Color("ffd47a")); content.add_child(weakness_damage)
+		var self_damage := int(last_resolution_details.get("self_damage", 0))
+		var self_heal := int(last_resolution_details.get("self_heal", 0))
+		var reduction := int(last_resolution_details.get("incoming_reduction", 0))
+		if self_damage > 0: _add_result_notice(content, _tr_ui("result_self_damage", {"value":self_damage}), Color("ff9a8c"))
+		if self_heal > 0: _add_result_notice(content, _tr_ui("result_heal", {"value":self_heal}), Color("78e0a8"))
+		if reduction > 0: _add_result_notice(content, _tr_ui("result_reduction", {"value":reduction}), Color("8fc7ff"))
+		if bool(last_resolution_details.get("incoming_immunity", false)): _add_result_notice(content, _tr_ui("result_immunity"), Color("8fc7ff"))
 		var effects_title := Label.new(); effects_title.text = _tr_ui("result_effects"); effects_title.add_theme_font_size_override("font_size", 18); effects_title.add_theme_color_override("font_color", Color("ffd47a")); content.add_child(effects_title)
 		if last_resolved_effects.is_empty():
 			var none := Label.new(); none.text = _tr_ui("result_no_effect"); content.add_child(none)
 		else:
 			for effect in last_resolved_effects:
 				var line := Label.new(); line.text = "• %s" % effect; line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; line.add_theme_font_size_override("font_size", 17); content.add_child(line)
-		var active: Array[Dictionary] = []
-		active.append_array(pending_opponent_reminders)
-		active.append_array(pending_self_reminders)
-		if not active.is_empty():
-			var active_title := Label.new(); active_title.text = _tr_ui("result_active_effects"); active_title.add_theme_font_size_override("font_size", 18); active_title.add_theme_color_override("font_color", Color("ffd47a")); content.add_child(active_title)
-			for reminder in active:
-				var line := Label.new(); line.text = "• %s" % String(reminder.get("text", "")); line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; line.add_theme_font_size_override("font_size", 17); content.add_child(line)
 	var close := Button.new(); close.text = _tr_ui("close"); close.custom_minimum_size = Vector2(210,48); close.pressed.connect(popup.hide); box.add_child(close)
 	margin.custom_minimum_size.x = 580.0
 	var result_height := 235
 	if not move_failed:
-		var reminder_count := pending_opponent_reminders.size() + pending_self_reminders.size()
 		var extra_effect_lines := maxi(0, last_resolved_effects.size() - 1) * 42
-		var active_effect_space := 0 if reminder_count == 0 else 38 + reminder_count * 46
-		# Reserve enough room for wrapped effect text and the close button. The
-		# shared popup helper will still cap this to the visible viewport.
-		result_height = clampi(420 + extra_effect_lines + active_effect_space, 420, 680)
+		# Turn reminders remain visible on the battle page, so the result dialog
+		# shows each resolved effect only once.
+		result_height = clampi(420 + extra_effect_lines, 420, 600)
 	_show_popup_at_size(popup, Vector2i(625, result_height))
+
+
+func _add_result_notice(parent: VBoxContainer, value: String, color: Color) -> void:
+	var notice := Label.new()
+	notice.text = "◆ %s" % value
+	notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	notice.add_theme_font_size_override("font_size", 18)
+	notice.add_theme_color_override("font_color", color)
+	parent.add_child(notice)
 
 
 func _show_popup_at_size(popup: PopupPanel, requested_size: Vector2i) -> void:
@@ -1449,9 +1654,10 @@ func _ui_button_style(bg_color: Color, border_color: Color, border_width: int) -
 	return style
 
 func _configure_touch_scrollbar(scroll: ScrollContainer) -> void:
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	var bar := scroll.get_v_scroll_bar()
 	bar.custom_minimum_size.x = 30.0
-	bar.add_theme_stylebox_override("scroll", _scrollbar_style(Color("101923"), Color("25384b"), 1))
+	bar.add_theme_stylebox_override("scroll", _scrollbar_style(Color(0.06,0.10,0.14,0.10), Color(0.20,0.28,0.36,0.14), 1))
 	bar.add_theme_stylebox_override("grabber", _scrollbar_style(Color("66819b"), Color("91abc4"), 1))
 	bar.add_theme_stylebox_override("grabber_highlight", _scrollbar_style(Color("8fb3d4"), Color("c4e1fb"), 2))
 	bar.add_theme_stylebox_override("grabber_pressed", _scrollbar_style(Color("b3d7f5"), Color.WHITE, 2))
