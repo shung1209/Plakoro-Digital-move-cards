@@ -158,8 +158,11 @@ function resetRoomMatch(room) { room.firstPlayerId = null; room.initiativeMode =
 function serialize(room) { return { code: room.code, host_id: room.hostId, first_player_id: room.firstPlayerId, initiative_mode: room.initiativeMode, current_turn_player_id: room.currentTurnPlayerId, ready_count: room.readyPlayers.size, ready_player_ids: [...room.readyPlayers.keys()], match_started: room.matchStarted, player_count: room.players.size, connected_count: [...room.players.values()].filter((p) => p.connected).length, players: [...room.players.values()].map((p) => ({ id: p.id, name: p.name, connected: p.connected })) }; }
 function broadcastRoom(room) { const payload = { type: "room_updated", room: serialize(room) }; for (const p of room.players.values()) if (p.connected) send(p.socket, payload); }
 function broadcast(room, payload) { for (const p of room.players.values()) if (p.connected) send(p.socket, payload); }
-function createCode() { return randomBytes(3).toString("hex").toUpperCase(); }
-function cleanCode(v) { return String(v ?? "").replace(/[^A-F0-9]/gi, "").toUpperCase().slice(0, 6); }
+function createCode() {
+  const alphabet = "ABCDEFGHI";
+  return [...randomBytes(6)].map((value) => alphabet[value % alphabet.length]).join("");
+}
+function cleanCode(v) { return String(v ?? "").replace(/[^A-I]/gi, "").toUpperCase().slice(0, 6); }
 function cleanName(v) { return String(v ?? "Player").trim().slice(0, 24) || "Player"; }
 function send(socket, payload) { if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(payload)); }
 function fail(client, code, message) { send(client.socket, { type: "error", code, message }); }

@@ -41,10 +41,10 @@ const UI_TEXT := {
 }
 
 const ONLINE_UI_TEXT := {
-	"en_US":{"online":"Connect","online_title":"Phone Connection","online_name":"Your name","online_server":"Server","online_connect":"Connect","online_disconnect":"Disconnect","online_create":"Create Room","online_join":"Join Room","online_code":"Room code","online_waiting":"Waiting for opponent","online_ready":"Connected • {code}","online_opponent_move":"Opponent's Move","online_hint":"Create a room on one phone, then enter its six-character code on the other phone.","online_invalid_code":"Enter a six-character room code.","initiative_title":"Decide who goes first","initiative_needed":"Choose coin flip or rock-paper-scissors before starting.","coin_flip":"Flip Coin","rps":"Rock Paper Scissors","rock":"Rock","paper":"Paper","scissors":"Scissors","initiative_waiting":"Waiting for the opponent's choice…","initiative_tie":"Tie — choose again","initiative_you_first":"You go first","initiative_opponent_first":"Opponent goes first","ready_for_battle":"Ready","waiting_ready":"Waiting for opponent to finish selecting…"},
-	"es_ES":{"online":"Conectar","online_title":"Conexión entre teléfonos","online_name":"Tu nombre","online_server":"Servidor","online_connect":"Conectar","online_disconnect":"Desconectar","online_create":"Crear sala","online_join":"Unirse","online_code":"Código de sala","online_waiting":"Esperando al oponente","online_ready":"Conectado • {code}","online_opponent_move":"Movimiento del oponente","online_hint":"Crea una sala en un teléfono e introduce el código de seis caracteres en el otro.","online_invalid_code":"Introduce un código de seis caracteres.","initiative_title":"Decidir quién empieza","initiative_needed":"Elige moneda o piedra, papel o tijera antes de empezar.","coin_flip":"Lanzar moneda","rps":"Piedra, papel o tijera","rock":"Piedra","paper":"Papel","scissors":"Tijera","initiative_waiting":"Esperando la elección del oponente…","initiative_tie":"Empate: elige de nuevo","initiative_you_first":"Tú empiezas","initiative_opponent_first":"El oponente empieza","ready_for_battle":"Listo","waiting_ready":"Esperando a que el oponente termine de elegir…"},
-	"ja_JP":{"online":"接続","online_title":"スマホ接続","online_name":"あなたの名前","online_server":"サーバー","online_connect":"接続","online_disconnect":"切断","online_create":"ルーム作成","online_join":"参加","online_code":"ルームコード","online_waiting":"相手を待っています","online_ready":"接続済み • {code}","online_opponent_move":"相手のわざ","online_hint":"1台目でルームを作成し、2台目に6文字のコードを入力します。","online_invalid_code":"6文字のルームコードを入力してください。","initiative_title":"先攻を決める","initiative_needed":"コイントスかじゃんで先攻を決めてください。","coin_flip":"コイントス","rps":"じゃんけん","rock":"グー","paper":"パー","scissors":"チョキ","initiative_waiting":"相手の選択を待っています…","initiative_tie":"あいこ — もう一度選択","initiative_you_first":"あなたが先攻","initiative_opponent_first":"相手が先攻","ready_for_battle":"準備完了","waiting_ready":"相手の選択完了を待っています…"},
-	"zh_TW":{"online":"連線","online_title":"手機對戰連線","online_name":"你的名稱","online_server":"伺服器","online_connect":"連線","online_disconnect":"斷開連線","online_create":"建立房間","online_join":"加入房間","online_code":"房間碼","online_waiting":"等待對手加入","online_ready":"已連線 • {code}","online_opponent_move":"對手出招","online_hint":"在一台手機建立房間，再於另一台輸入六位房間碼。","online_invalid_code":"請輸入六位房間碼。","initiative_title":"決定先攻","initiative_needed":"開始前請以擲硬幣或猜拳決定先攻。","coin_flip":"擲硬幣","rps":"猜拳","rock":"石頭","paper":"布","scissors":"剪刀","initiative_waiting":"等待對手選擇…","initiative_tie":"平手，請重新選擇","initiative_you_first":"你先攻","initiative_opponent_first":"對手先攻","ready_for_battle":"準備完成","waiting_ready":"等待對手完成選擇…"}
+	"en_US":{"online":"Connect","online_title":"Phone Connection","online_name":"Your name","online_server":"Server","online_connect":"Connect","online_disconnect":"Disconnect","online_create":"Create Room","online_join":"Join Room","online_code":"Room code","online_waiting":"Waiting for opponent","online_ready":"Connected • {code}","online_opponent_move":"Opponent's Move","online_hint":"Create a room on one phone, then enter its six-character code on the other phone.","online_invalid_code":"Enter a six-character room code.","initiative_title":"Decide who goes first","initiative_needed":"Choose coin flip or rock-paper-scissors before starting.","coin_flip":"Flip Coin","rps":"Rock Paper Scissors","rock":"Rock","paper":"Paper","scissors":"Scissors","initiative_waiting":"Waiting for the opponent's choice…","initiative_tie":"Tie — choose again","initiative_you_first":"You go first","initiative_opponent_first":"Opponent goes first","ready_for_battle":"Ready","waiting_ready":"Waiting for opponent to finish selecting…","online_reconnecting":"Reconnecting…","opponent_disconnected":"Opponent offline"},
+	"es_ES":{"online":"Conectar","online_title":"Conexión entre teléfonos","online_name":"Tu nombre","online_server":"Servidor","online_connect":"Conectar","online_disconnect":"Desconectar","online_create":"Crear sala","online_join":"Unirse","online_code":"Código de sala","online_waiting":"Esperando al oponente","online_ready":"Conectado • {code}","online_opponent_move":"Movimiento del oponente","online_hint":"Crea una sala en un teléfono e introduce el código de seis caracteres en el otro.","online_invalid_code":"Introduce un código de seis caracteres.","initiative_title":"Decidir quién empieza","initiative_needed":"Elige moneda o piedra, papel o tijera antes de empezar.","coin_flip":"Lanzar moneda","rps":"Piedra, papel o tijera","rock":"Piedra","paper":"Papel","scissors":"Tijera","initiative_waiting":"Esperando la elección del oponente…","initiative_tie":"Empate: elige de nuevo","initiative_you_first":"Tú empiezas","initiative_opponent_first":"El oponente empieza","ready_for_battle":"Listo","waiting_ready":"Esperando a que el oponente termine de elegir…","online_reconnecting":"Reconectando…","opponent_disconnected":"Rival sin conexión"},
+	"ja_JP":{"online":"接続","online_title":"スマホ接続","online_name":"あなたの名前","online_server":"サーバー","online_connect":"接続","online_disconnect":"切断","online_create":"ルーム作成","online_join":"参加","online_code":"ルームコード","online_waiting":"相手を待っています","online_ready":"接続済み • {code}","online_opponent_move":"相手のわざ","online_hint":"1台目でルームを作成し、2台目に6文字のコードを入力します。","online_invalid_code":"6文字のルームコードを入力してください。","initiative_title":"先攻を決める","initiative_needed":"コイントスかじゃんで先攻を決めてください。","coin_flip":"コイントス","rps":"じゃんけん","rock":"グー","paper":"パー","scissors":"チョキ","initiative_waiting":"相手の選択を待っています…","initiative_tie":"あいこ — もう一度選択","initiative_you_first":"あなたが先攻","initiative_opponent_first":"相手が先攻","ready_for_battle":"準備完了","waiting_ready":"相手の選択完了を待っています…","online_reconnecting":"再接続中…","opponent_disconnected":"相手オフライン"},
+	"zh_TW":{"online":"連線","online_title":"手機對戰連線","online_name":"你的名稱","online_server":"伺服器","online_connect":"連線","online_disconnect":"斷開連線","online_create":"建立房間","online_join":"加入房間","online_code":"房間碼","online_waiting":"等待對手加入","online_ready":"已連線 • {code}","online_opponent_move":"對手出招","online_hint":"在一台手機建立房間，再於另一台輸入六位房間碼。","online_invalid_code":"請輸入六位房間碼。","initiative_title":"決定先攻","initiative_needed":"開始前請以擲硬幣或猜拳決定先攻。","coin_flip":"擲硬幣","rps":"猜拳","rock":"石頭","paper":"布","scissors":"剪刀","initiative_waiting":"等待對手選擇…","initiative_tie":"平手，請重新選擇","initiative_you_first":"你先攻","initiative_opponent_first":"對手先攻","ready_for_battle":"準備完成","waiting_ready":"等待對手完成選擇…","online_reconnecting":"重新連線中…","opponent_disconnected":"對手離線"}
 }
 
 const TYPE_COLORS := {
@@ -52,6 +52,11 @@ const TYPE_COLORS := {
 	"grass": Color("376c3d"), "flying": Color("546c86"), "normal": Color("62656c"),
 	"psychic": Color("783b6c"), "fighting": Color("7d4932"), "steel": Color("52676c"),
 	"dark": Color("3f3a49")
+}
+
+const ONLINE_ENERGY_CODES := {
+	"A":"grass", "B":"fire", "C":"water", "D":"electric", "E":"psychic",
+	"F":"fighting", "G":"dark", "H":"steel", "I":"flying"
 }
 
 var pokemon_docs: Array[Dictionary] = []
@@ -118,6 +123,7 @@ func _ready() -> void:
 	OnlineRelay.room_changed.connect(_on_online_room_changed)
 	OnlineRelay.initiative_changed.connect(_on_online_initiative_changed)
 	OnlineRelay.battle_ready.connect(_on_online_battle_ready)
+	OnlineRelay.connection_changed.connect(_on_online_connection_changed)
 
 func _load_database() -> void:
 	pokemon_docs.clear()
@@ -772,7 +778,7 @@ func _build_play_toolbar() -> void:
 	var opponent_finished := Button.new()
 	opponent_finished.text = _tr_ui("opponent_finished")
 	opponent_finished.custom_minimum_size = Vector2(205,40)
-	opponent_finished.visible = phase == "opponent" and not OnlineRelay.is_ready_for_moves()
+	opponent_finished.visible = phase == "opponent" and OnlineRelay.room.is_empty()
 	opponent_finished.pressed.connect(_confirm_opponent_turn_finished)
 	row.add_child(opponent_finished)
 
@@ -1500,9 +1506,11 @@ func _add_result_notice(parent: VBoxContainer, value: String, color: Color) -> v
 
 
 func _online_button_text() -> String:
+	if OnlineRelay.state == &"reconnecting": return _tr_ui("online_reconnecting")
 	if OnlineRelay.room.is_empty(): return _tr_ui("online")
 	var code := String(OnlineRelay.room.get("code", ""))
-	if int(OnlineRelay.room.get("player_count", 0)) < 2: return _tr_ui("online_waiting")
+	if int(OnlineRelay.room.get("connected_count", OnlineRelay.room.get("player_count", 0))) < 2:
+		return _tr_ui("opponent_disconnected") if int(OnlineRelay.room.get("player_count", 0)) >= 2 else _tr_ui("online_waiting")
 	return _tr_ui("online_ready", {"code":code})
 
 
@@ -1523,8 +1531,14 @@ func _open_online_popup() -> void:
 	var connect := Button.new(); connect.custom_minimum_size.y = 46; box.add_child(connect)
 	var room_row := HBoxContainer.new(); room_row.add_theme_constant_override("separation", 8); box.add_child(room_row)
 	var create := Button.new(); create.text = _tr_ui("online_create"); create.size_flags_horizontal = Control.SIZE_EXPAND_FILL; create.custom_minimum_size.y = 48; room_row.add_child(create)
-	var code_edit := LineEdit.new(); code_edit.placeholder_text = _tr_ui("online_code"); code_edit.max_length = 6; code_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL; code_edit.custom_minimum_size.y = 48; room_row.add_child(code_edit)
 	var join := Button.new(); join.text = _tr_ui("online_join"); join.size_flags_horizontal = Control.SIZE_EXPAND_FILL; join.custom_minimum_size.y = 48; room_row.add_child(join)
+	var code_edit := LineEdit.new(); code_edit.max_length = 6; code_edit.visible = false; box.add_child(code_edit)
+	var code_display := HBoxContainer.new(); code_display.alignment = BoxContainer.ALIGNMENT_CENTER; code_display.add_theme_constant_override("separation", 6); box.add_child(code_display)
+	var energy_palette := HBoxContainer.new(); energy_palette.alignment = BoxContainer.ALIGNMENT_CENTER; energy_palette.add_theme_constant_override("separation", 4); box.add_child(energy_palette)
+	for code in ONLINE_ENERGY_CODES:
+		var energy_button := Button.new(); energy_button.custom_minimum_size = Vector2(46,46); energy_button.icon = _energy_texture(String(ONLINE_ENERGY_CODES[code])); energy_button.expand_icon = true; energy_button.tooltip_text = String(ONLINE_ENERGY_CODES[code]).capitalize(); energy_button.pressed.connect(_append_online_energy_code.bind(code_edit, code_display, code)); energy_palette.add_child(energy_button)
+	var back_code := Button.new(); back_code.text = "⌫"; back_code.custom_minimum_size = Vector2(46,46); back_code.pressed.connect(_remove_online_energy_code.bind(code_edit, code_display)); energy_palette.add_child(back_code)
+	var clear_code := Button.new(); clear_code.text = "×"; clear_code.custom_minimum_size = Vector2(46,46); clear_code.pressed.connect(_clear_online_energy_code.bind(code_edit, code_display)); energy_palette.add_child(clear_code)
 	var status := Label.new(); status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; box.add_child(status)
 	var initiative_title := Label.new(); initiative_title.text = _tr_ui("initiative_title"); initiative_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; initiative_title.add_theme_font_size_override("font_size", 18); box.add_child(initiative_title)
 	var initiative_row := HBoxContainer.new(); initiative_row.add_theme_constant_override("separation", 8); box.add_child(initiative_row)
@@ -1538,6 +1552,11 @@ func _open_online_popup() -> void:
 		server_edit.editable = not connected
 		create.disabled = not connected
 		join.disabled = not connected
+		var shown_code := String(OnlineRelay.room.get("code", "")) if not OnlineRelay.room.is_empty() else code_edit.text
+		_render_online_energy_code(code_display, shown_code)
+		energy_palette.visible = OnlineRelay.room.is_empty()
+		join.visible = OnlineRelay.room.is_empty()
+		create.visible = OnlineRelay.room.is_empty()
 		var ready := OnlineRelay.is_ready_for_moves()
 		coin.disabled = not ready or not String(OnlineRelay.room.get("first_player_id", "")).is_empty()
 		for child in rps_row.get_children(): (child as Button).disabled = not ready or not String(OnlineRelay.room.get("first_player_id", "")).is_empty()
@@ -1568,7 +1587,35 @@ func _open_online_popup() -> void:
 		if OnlineRelay.room_changed.is_connected(room_callback): OnlineRelay.room_changed.disconnect(room_callback)
 		if OnlineRelay.initiative_changed.is_connected(initiative_callback): OnlineRelay.initiative_changed.disconnect(initiative_callback)
 	)
-	_show_popup_at_size(popup, Vector2i(650, 535))
+	_show_popup_at_size(popup, Vector2i(650, 650))
+
+
+func _append_online_energy_code(code_edit: LineEdit, display: HBoxContainer, code: String) -> void:
+	if code_edit.text.length() >= 6: return
+	code_edit.text += code
+	_render_online_energy_code(display, code_edit.text)
+
+
+func _remove_online_energy_code(code_edit: LineEdit, display: HBoxContainer) -> void:
+	code_edit.text = code_edit.text.left(maxi(0, code_edit.text.length() - 1))
+	_render_online_energy_code(display, code_edit.text)
+
+
+func _clear_online_energy_code(code_edit: LineEdit, display: HBoxContainer) -> void:
+	code_edit.text = ""
+	_render_online_energy_code(display, "")
+
+
+func _render_online_energy_code(display: HBoxContainer, code: String) -> void:
+	for child in display.get_children():
+		display.remove_child(child)
+		child.queue_free()
+	for index in 6:
+		var slot := Button.new(); slot.custom_minimum_size = Vector2(52,52); slot.mouse_filter = Control.MOUSE_FILTER_IGNORE; slot.focus_mode = Control.FOCUS_NONE; slot.expand_icon = true
+		var character := code.substr(index, 1) if index < code.length() else ""
+		if ONLINE_ENERGY_CODES.has(character): slot.icon = _energy_texture(String(ONLINE_ENERGY_CODES[character]))
+		else: slot.text = str(index + 1); slot.modulate = Color(1,1,1,0.5)
+		display.add_child(slot)
 
 
 func _publish_online_move(move_id: String, orientation: String, total_damage: Variant, move_failed: bool) -> void:
@@ -1663,6 +1710,9 @@ func _on_online_error(message: String) -> void:
 
 func _on_online_room_changed(_room: Dictionary) -> void:
 	_refresh_online_buttons()
+	if showing_play_page and OnlineRelay.room.is_empty():
+		_show_play_page()
+		return
 	if showing_play_page and not OnlineRelay.room.is_empty() and not bool(OnlineRelay.room.get("match_started", false)):
 		online_waiting_to_start = false
 		_show_setup_page()
@@ -1692,6 +1742,10 @@ func _initiative_status_text() -> String:
 func _refresh_online_buttons() -> void:
 	for button in online_status_buttons:
 		if is_instance_valid(button): button.text = _online_button_text()
+
+
+func _on_online_connection_changed(_state: StringName) -> void:
+	_refresh_online_buttons()
 
 
 func _show_popup_at_size(popup: PopupPanel, requested_size: Vector2i) -> void:
