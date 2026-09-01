@@ -93,6 +93,10 @@ func set_battle_ready(ready: bool, loadout: Dictionary = {}) -> void:
 	_send({"type":"set_ready", "ready":ready, "loadout":loadout})
 
 
+func reset_battle() -> void:
+	_send({"type":"reset_battle"})
+
+
 func is_ready_for_moves() -> bool:
 	return state == &"connected" and room.size() > 0 and int(room.get("connected_count", room.get("player_count", 0))) == 2
 
@@ -162,6 +166,9 @@ func _receive(packet: PackedByteArray) -> void:
 		"initiative_waiting", "initiative_tie":
 			initiative_changed.emit(Dictionary(message).duplicate(true))
 		"battle_ready": battle_ready.emit(Dictionary(message.get("match", {})).duplicate(true))
+		"turn_changed":
+			room["current_turn_player_id"] = String(message.get("current_turn_player_id", ""))
+			room_changed.emit(room)
 		"error": online_error.emit(String(message.get("message", "Online error")))
 
 

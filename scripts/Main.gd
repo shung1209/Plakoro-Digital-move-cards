@@ -105,6 +105,7 @@ var last_layout_signature := ""
 var layout_refresh_pending := false
 var online_sequence := 0
 var online_waiting_to_start := false
+var online_status_buttons: Array[Button] = []
 
 func _ready() -> void:
 	_load_database()
@@ -354,6 +355,7 @@ func _build_shell() -> void:
 	page_padding.add_child(page)
 
 func _clear_page() -> void:
+	online_status_buttons.clear()
 	for child in page.get_children():
 		page.remove_child(child)
 		child.queue_free()
@@ -375,7 +377,7 @@ func _header(subtitle: String) -> void:
 		if LOCALES[label] == current_locale: selected_idx = idx
 		idx += 1
 	language_option.select(selected_idx); language_option.item_selected.connect(_on_language_selected); row.add_child(language_option)
-	var online_button := Button.new(); online_button.text = _online_button_text(); online_button.custom_minimum_size = Vector2(150,46); online_button.pressed.connect(_open_online_popup); row.add_child(online_button)
+	var online_button := Button.new(); online_button.text = _online_button_text(); online_button.custom_minimum_size = Vector2(150,46); online_button.pressed.connect(_open_online_popup); row.add_child(online_button); online_status_buttons.append(online_button)
 	page.add_child(HSeparator.new())
 
 func _show_setup_page() -> void:
@@ -744,7 +746,7 @@ func _build_play_toolbar() -> void:
 	var end_game := Button.new()
 	end_game.text = _tr_ui("end_game")
 	end_game.custom_minimum_size = Vector2(125,40)
-	end_game.pressed.connect(_show_setup_page)
+	end_game.pressed.connect(_end_session)
 	row.add_child(end_game)
 
 	language_option = OptionButton.new()
@@ -765,6 +767,7 @@ func _build_play_toolbar() -> void:
 	online_button.custom_minimum_size = Vector2(150,40)
 	online_button.pressed.connect(_open_online_popup)
 	row.add_child(online_button)
+	online_status_buttons.append(online_button)
 
 	var opponent_finished := Button.new()
 	opponent_finished.text = _tr_ui("opponent_finished")
@@ -777,6 +780,12 @@ func _build_play_toolbar() -> void:
 func _toggle_status_details() -> void:
 	status_details_expanded = not status_details_expanded
 	_show_play_page()
+
+
+func _end_session() -> void:
+	online_waiting_to_start = false
+	if OnlineRelay.is_ready_for_moves(): OnlineRelay.reset_battle()
+	_show_setup_page()
 
 
 func _build_status_header() -> void:
@@ -1547,7 +1556,10 @@ func _open_online_popup() -> void:
 	)
 	var state_callback := func(_state: StringName): refresh.call()
 	var room_callback := func(_room: Dictionary): refresh.call()
-	var initiative_callback := func(_result: Dictionary): refresh.call()
+	var initiative_callback := func(result: Dictionary):
+		if String(result.get("type", "")) == "initiative_tie": status.text = _tr_ui("initiative_tie")
+		elif String(result.get("type", "")) == "initiative_waiting": status.text = _tr_ui("initiative_waiting")
+		else: refresh.call()
 	OnlineRelay.connection_changed.connect(state_callback)
 	OnlineRelay.room_changed.connect(room_callback)
 	OnlineRelay.initiative_changed.connect(initiative_callback)
@@ -1650,12 +1662,18 @@ func _on_online_error(message: String) -> void:
 
 
 func _on_online_room_changed(_room: Dictionary) -> void:
+	_refresh_online_buttons()
+	if showing_play_page and not OnlineRelay.room.is_empty() and not bool(OnlineRelay.room.get("match_started", false)):
+		online_waiting_to_start = false
+		_show_setup_page()
+		return
 	if not showing_play_page:
 		if online_waiting_to_start and OnlineRelay.player_id not in (OnlineRelay.room.get("ready_player_ids", []) as Array): online_waiting_to_start = false
 		_update_selection_state()
 
 
 func _on_online_initiative_changed(_result: Dictionary) -> void:
+	_refresh_online_buttons()
 	if not showing_play_page: _update_selection_state()
 
 
@@ -1669,6 +1687,11 @@ func _initiative_status_text() -> String:
 	var first_player := String(OnlineRelay.room.get("first_player_id", ""))
 	if first_player.is_empty(): return _tr_ui("initiative_needed")
 	return _tr_ui("initiative_you_first") if first_player == OnlineRelay.player_id else _tr_ui("initiative_opponent_first")
+
+
+func _refresh_online_buttons() -> void:
+	for button in online_status_buttons:
+		if is_instance_valid(button): button.text = _online_button_text()
 
 
 func _show_popup_at_size(popup: PopupPanel, requested_size: Vector2i) -> void:

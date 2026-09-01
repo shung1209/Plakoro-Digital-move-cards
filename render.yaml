@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: plakoro-digital-relay
+    runtime: node
+    plan: free
+    rootDir: online-server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeployTrigger: commit

@@ -34,6 +34,7 @@ function receive(client, data) {
     case "publish_move": return publishMove(client, message.payload);
     case "decide_first": return decideFirst(client, String(message.mode ?? ""), String(message.choice ?? ""));
     case "set_ready": return setReady(client, Boolean(message.ready), message.loadout);
+    case "reset_battle": return resetBattle(client);
     case "ping": return send(client.socket, { type: "pong", sent_at: message.sent_at ?? null });
     default: return fail(client, "unknown_message", "Unknown message type.");
   }
@@ -42,7 +43,7 @@ function receive(client, data) {
 function createRoom(client, name) {
   leaveRoom(client, false);
   let code = createCode(); while (rooms.has(code)) code = createCode();
-  const room = { code, hostId: client.id, players: new Map(), updatedAt: Date.now(), firstPlayerId: null, initiativeMode: null, rpsChoices: new Map(), readyPlayers: new Map(), matchStarted: false };
+  const room = { code, hostId: client.id, players: new Map(), updatedAt: Date.now(), firstPlayerId: null, initiativeMode: null, rpsChoices: new Map(), readyPlayers: new Map(), matchStarted: false, currentTurnPlayerId: null };
   rooms.set(code, room); addPlayer(room, client, name);
   send(client.socket, { type: "room_joined", room: serialize(room) }); broadcastRoom(room);
 }
@@ -55,17 +56,22 @@ function joinRoom(client, code, name) {
 }
 function addPlayer(room, client, name) {
   client.name = name; client.roomCode = room.code; client.connected = true;
-  room.players.set(client.id, client); room.firstPlayerId = null; room.initiativeMode = null; room.rpsChoices.clear(); room.readyPlayers.clear(); room.matchStarted = false; room.updatedAt = Date.now();
+  room.players.set(client.id, client); resetRoomMatch(room); room.updatedAt = Date.now();
 }
 function publishMove(client, input) {
   const room = rooms.get(client.roomCode);
   if (!room || !room.players.has(client.id)) return fail(client, "not_in_room", "Join a room first.");
   if (room.players.size !== 2) return fail(client, "waiting_for_opponent", "Waiting for the second player.");
+  if (!room.matchStarted) return fail(client, "match_not_started", "Both players must be ready first.");
+  if (room.currentTurnPlayerId !== client.id) return fail(client, "not_your_turn", "It is not your turn.");
   const payload = sanitizeMove(input);
   if (!payload.move_id) return fail(client, "invalid_move", "Move ID is required.");
   payload.sender_id = client.id;
   room.updatedAt = Date.now();
   for (const player of room.players.values()) if (player.id !== client.id && player.connected) send(player.socket, { type: "opponent_move", payload });
+  const opponent = [...room.players.values()].find((player) => player.id !== client.id);
+  room.currentTurnPlayerId = opponent?.id ?? null;
+  broadcast(room, { type: "turn_changed", current_turn_player_id: room.currentTurnPlayerId });
 }
 function decideFirst(client, mode, choice) {
   const room = rooms.get(client.roomCode);
@@ -105,8 +111,9 @@ function setReady(client, ready, rawLoadout) {
   }
   room.updatedAt = Date.now(); broadcastRoom(room);
   if (!room.matchStarted && room.readyPlayers.size === 2 && [...room.players.values()].filter((p) => p.connected).length === 2) {
-    room.matchStarted = true;
-    broadcast(room, { type: "battle_ready", match: { first_player_id: room.firstPlayerId, players: Object.fromEntries(room.readyPlayers) } });
+    room.matchStarted = true; room.currentTurnPlayerId = room.firstPlayerId;
+    broadcastRoom(room);
+    broadcast(room, { type: "battle_ready", match: { first_player_id: room.firstPlayerId, current_turn_player_id: room.currentTurnPlayerId, players: Object.fromEntries(room.readyPlayers) } });
   }
 }
 function sanitizeLoadout(value) {
@@ -135,14 +142,20 @@ function resume(client, token) {
 function leaveRoom(client, notify = true) {
   const room = rooms.get(client.roomCode);
   if (room) {
-    room.players.delete(client.id); room.firstPlayerId = null; room.initiativeMode = null; room.rpsChoices.clear(); room.readyPlayers.clear(); room.matchStarted = false; room.updatedAt = Date.now();
+    room.players.delete(client.id); resetRoomMatch(room); room.updatedAt = Date.now();
     if (room.players.size === 0) rooms.delete(room.code);
     else { if (room.hostId === client.id) room.hostId = room.players.keys().next().value; broadcastRoom(room); }
   }
   client.roomCode = null; if (notify) send(client.socket, { type: "room_left" });
 }
 function disconnect(client) { client.connected = false; const room = rooms.get(client.roomCode); if (room) { room.updatedAt = Date.now(); broadcastRoom(room); } }
-function serialize(room) { return { code: room.code, host_id: room.hostId, first_player_id: room.firstPlayerId, initiative_mode: room.initiativeMode, ready_count: room.readyPlayers.size, ready_player_ids: [...room.readyPlayers.keys()], match_started: room.matchStarted, player_count: room.players.size, connected_count: [...room.players.values()].filter((p) => p.connected).length, players: [...room.players.values()].map((p) => ({ id: p.id, name: p.name, connected: p.connected })) }; }
+function resetBattle(client) {
+  const room = rooms.get(client.roomCode);
+  if (!room || !room.players.has(client.id)) return;
+  resetRoomMatch(room); room.updatedAt = Date.now(); broadcastRoom(room);
+}
+function resetRoomMatch(room) { room.firstPlayerId = null; room.initiativeMode = null; room.rpsChoices.clear(); room.readyPlayers.clear(); room.matchStarted = false; room.currentTurnPlayerId = null; }
+function serialize(room) { return { code: room.code, host_id: room.hostId, first_player_id: room.firstPlayerId, initiative_mode: room.initiativeMode, current_turn_player_id: room.currentTurnPlayerId, ready_count: room.readyPlayers.size, ready_player_ids: [...room.readyPlayers.keys()], match_started: room.matchStarted, player_count: room.players.size, connected_count: [...room.players.values()].filter((p) => p.connected).length, players: [...room.players.values()].map((p) => ({ id: p.id, name: p.name, connected: p.connected })) }; }
 function broadcastRoom(room) { const payload = { type: "room_updated", room: serialize(room) }; for (const p of room.players.values()) if (p.connected) send(p.socket, payload); }
 function broadcast(room, payload) { for (const p of room.players.values()) if (p.connected) send(p.socket, payload); }
 function createCode() { return randomBytes(3).toString("hex").toUpperCase(); }

@@ -19,6 +19,9 @@ Plakoro Digital Move Cards 是實體 Plakoro 桌遊的數位招式卡與回合�
 - 支援 English、Español、日本語與繁體中文；切換語言時同步更新介面、名稱與效果內容。
 - 內建 Noto Sans JP／TC 字體，避免 Web 版出現缺字方框。
 - 支援 16:9～21:9 responsive layout，依視窗寬度自動調整欄數。
+- 可選擇完全離線的桌遊輔助，或透過六位房間碼連接兩台手機。
+- 線上模式支援擲硬幣或猜拳決定先攻，並在雙方準備完成後同步開戰。
+- 對手確認出招後，手機會以目前語言顯示對手的完整招式卡、傷害與觸發效果。
 
 ## 使用流程
 
@@ -51,6 +54,15 @@ Plakoro Digital Move Cards 是實體 Plakoro 桌遊的數位招式卡與回合�
 - 遊戲頁預設以招式卡為視覺重點。
 - 使用「顯示資訊／隱藏資訊」切換 Pokémon、HP、弱點與最近骰面結果。
 - 「結束遊戲」會回到 Pokémon 與四張招式卡的選擇畫面。
+
+### 5. 離線與線上對戰
+
+- **離線**：不需要伺服器或網路，直接選擇四張卡並開始；對手回合完成後手動按下「對手回合結束」。
+- **線上**：按下「連線」，一方建立房間，另一方輸入六位房間碼。
+- 兩台手機連線後，可以擲硬幣或雙方猜拳決定先攻；猜拳平手時需重新選擇。
+- 兩位玩家各自選擇 Pokémon 與四張卡，雙方都按下「準備完成」後才會進入戰鬥。
+- 出招方完成 Enekoro 與 Charakoro 判定後，對手手機會自動顯示招式卡、傷害、弱點提示、自傷、回復、減傷、免傷與觸發效果。
+- 連線失敗不會影響離線模式；斷開連線後仍可回到原本的手動桌遊流程。
 
 ## Responsive layout
 
@@ -118,6 +130,9 @@ This application does not replace the physical dice or tabletop rulings, and it 
 - Supports English, Spanish, Japanese, and Traditional Chinese. Changing the language updates the interface, Pokémon names, move names, and effect text.
 - Bundles Noto Sans JP and Noto Sans TC to prevent missing CJK glyphs in Web exports.
 - Supports responsive layouts from 16:9 through 21:9, automatically adjusting the number of columns to the viewport.
+- Supports either a fully offline tabletop flow or a two-phone connection using a six-character room code.
+- Online rooms can use a server-side coin flip or private rock-paper-scissors to decide who goes first, then wait until both players are ready.
+- When an opponent confirms a move, the receiving phone displays the full card, damage, and triggered effects in its currently selected language.
 
 ## How to use
 
@@ -150,6 +165,15 @@ This application does not replace the physical dice or tabletop rulings, and it 
 - The play screen keeps the move cards as its primary visual focus.
 - Use **Show info / Hide info** to toggle Pokémon details, HP, Weakness, and the most recent dice result.
 - **End Game** returns to the Pokémon and four-card selection screen.
+
+### 5. Offline and online play
+
+- **Offline:** no server or network is required. Select four cards and start immediately, then press **Opponent Turn Finished** after resolving the physical opponent turn.
+- **Online:** press **Connect**. One player creates a room and the other enters its six-character room code.
+- After both phones connect, use a coin flip or private rock-paper-scissors to decide initiative. A tied RPS round is repeated.
+- Each player selects a Pokémon and four cards independently. Battle begins only after both players press **Ready**.
+- After the acting player confirms Enekoro and Charakoro, the opponent receives the move card, damage, Weakness reminder, recoil, healing, reduction, immunity, and triggered-effect information.
+- A connection failure never disables offline play. Disconnecting returns the application to its original manual tabletop flow.
 
 ## Responsive layout
 
