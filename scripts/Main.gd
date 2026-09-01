@@ -247,7 +247,7 @@ func _move_effect_text(move_id: String, move_doc: Dictionary) -> String:
 		return _without_move_effect_heading(String(fallback_entries[move_key]).replace("\\n", "\n"))
 	var description := _move_description(move_doc)
 	var outcome_texts: Array[String] = []
-	var outcomes: Array = move_doc.get("outcome_rules", []) as Array
+	var outcomes := _move_outcome_rules(move_doc)
 	for i in outcomes.size():
 		outcome_texts.append(_localized_outcome_text(move_id, move_doc, i, outcomes[i] as Dictionary).strip_edges())
 	var move_lines: Array[String] = []
@@ -272,6 +272,31 @@ func _without_move_effect_heading(text: String) -> String:
 		if cleaned.begins_with(heading):
 			return cleaned.trim_prefix(heading).strip_edges()
 	return cleaned
+
+
+func _move_outcome_rules(move_doc: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for raw in move_doc.get("outcome_rules", []) as Array:
+		result.append(raw as Dictionary)
+	if not result.is_empty():
+		return result
+	# A small group of advanced cards stores confirmed Charakoro mappings in
+	# special_effects because their runtime action is not a basic opcode. They
+	# still need the same face display and roll-selection flow as normal cards.
+	for raw in move_doc.get("special_effects", []) as Array:
+		var special := raw as Dictionary
+		var orientations: Array = special.get("confirmed_orientations", []) as Array
+		if orientations.is_empty():
+			continue
+		result.append({
+			"condition": {
+				"type": "kyokoro_orientation_any",
+				"orientations": orientations.duplicate()
+			},
+			"actions": [],
+			"raw_text": String(special.get("text", special.get("source_text", "")))
+		})
+	return result
 
 func _build_shell() -> void:
 	_apply_locale_font()
@@ -357,8 +382,8 @@ func _show_setup_page() -> void:
 	var move_title := Label.new(); move_title.text = _tr_ui("move_cards"); move_title.add_theme_font_size_override("font_size",20); move_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL; move_header.add_child(move_title)
 	selection_count_label = Label.new(); move_header.add_child(selection_count_label)
 	var scroll := ScrollContainer.new(); scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; _configure_touch_scrollbar(scroll); right.add_child(scroll)
-	var scroll_content_margin := MarginContainer.new(); scroll_content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll_content_margin.add_theme_constant_override("margin_right",12); scroll.add_child(scroll_content_margin)
-	moves_grid = GridContainer.new(); moves_grid.columns = _setup_move_columns(); moves_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL; moves_grid.add_theme_constant_override("h_separation",12); moves_grid.add_theme_constant_override("v_separation",12); scroll_content_margin.add_child(moves_grid)
+	var scroll_content_margin := MarginContainer.new(); scroll_content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll_content_margin.add_theme_constant_override("margin_right",44); scroll.add_child(scroll_content_margin)
+	moves_grid = GridContainer.new(); moves_grid.columns = 1; moves_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL; moves_grid.add_theme_constant_override("v_separation",14); scroll_content_margin.add_child(moves_grid)
 	start_button = Button.new(); start_button.text = _tr_ui("start_session"); start_button.custom_minimum_size = Vector2(0,64); start_button.add_theme_font_size_override("font_size",20); start_button.add_theme_color_override("font_color",Color.WHITE); start_button.add_theme_color_override("font_hover_color",Color.WHITE); start_button.add_theme_stylebox_override("normal",_ui_button_style(Color("167a67"),Color("56d6b9"),2)); start_button.add_theme_stylebox_override("hover",_ui_button_style(Color("1d9a7f"),Color("8cf4d9"),3)); start_button.add_theme_stylebox_override("pressed",_ui_button_style(Color("116052"),Color("b2ffec"),3)); start_button.add_theme_stylebox_override("disabled",_ui_button_style(Color("111a20"),Color("2b3a42"),1)); start_button.pressed.connect(_start_session); right.add_child(start_button)
 	if pokemon_docs.size() > 0:
 		var desired_id := String(selected_pokemon.get("id", "")); var select_index := 0
@@ -368,7 +393,7 @@ func _show_setup_page() -> void:
 		for raw_move_id in preserved_move_ids:
 			var move_id := String(raw_move_id)
 			if move_checkboxes.has(move_id):
-				(move_checkboxes[move_id] as CheckButton).set_pressed_no_signal(true)
+				(move_checkboxes[move_id] as BaseButton).set_pressed_no_signal(true)
 				selected_move_ids.append(move_id)
 		_update_selection_state()
 
@@ -423,21 +448,40 @@ func _refresh_setup_weakness(doc: Dictionary) -> void:
 func _rebuild_move_choices() -> void:
 	for child in moves_grid.get_children(): moves_grid.remove_child(child); child.queue_free()
 	move_checkboxes.clear()
+	var viewport_width := get_viewport_rect().size.x
+	var setup_left_width := clampf(viewport_width * 0.24, 270.0, 360.0)
+	var estimated_card_width := maxf(760.0, viewport_width - setup_left_width - 120.0)
+	var setup_card_height := clampf(estimated_card_width * 379.0 / 760.0, 379.0, 430.0)
 	var ids: Array = selected_pokemon.get("available_move_card_ids",[]) as Array
 	for raw_id in ids:
 		var move_id := String(raw_id)
 		if not move_docs.has(move_id): continue
 		var move_doc: Dictionary = move_docs[move_id]
-		var card := VBoxContainer.new(); card.custom_minimum_size = Vector2(330,128); card.size_flags_horizontal = Control.SIZE_EXPAND_FILL; card.add_theme_constant_override("separation",5); moves_grid.add_child(card)
-		var check := CheckButton.new(); check.text = _move_name(move_doc); check.icon = _energy_texture(String(move_doc.get("attack_type","normal"))); check.expand_icon = true; check.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT; check.add_theme_constant_override("icon_max_width",28); check.tooltip_text = _type_name(String(move_doc.get("attack_type","normal"))); check.add_theme_font_size_override("font_size",18); check.toggled.connect(_on_move_toggled.bind(move_id)); card.add_child(check); move_checkboxes[move_id] = check
-		var summary_row := HBoxContainer.new(); summary_row.add_theme_constant_override("separation", 8); card.add_child(summary_row)
-		_add_energy_cost_icons(summary_row, move_doc, 24)
-		var damage_label := Label.new(); damage_label.text = "  •  %s" % _damage_text(move_doc); damage_label.modulate = Color(0.75,0.8,0.88); summary_row.add_child(damage_label)
-		_add_setup_effect_summary(card, move_id, move_doc)
+		var check := Button.new()
+		check.name = "MoveChoice_%s" % move_id
+		check.text = ""
+		check.toggle_mode = true
+		check.custom_minimum_size = Vector2(0, setup_card_height)
+		check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		check.tooltip_text = "%s · %s" % [_move_name(move_doc), _type_name(String(move_doc.get("attack_type", "normal")))]
+		check.add_theme_stylebox_override("normal", _transparent_card_button_style(Color("43576b"), 2))
+		check.add_theme_stylebox_override("hover", _transparent_card_button_style(Color("8fc7ff"), 3))
+		check.add_theme_stylebox_override("pressed", _transparent_card_button_style(Color("56d6b9"), 5))
+		check.add_theme_stylebox_override("focus", _transparent_card_button_style(Color("a8f5e5"), 4))
+		check.toggled.connect(_on_move_toggled.bind(move_id))
+		moves_grid.add_child(check)
+		var formal_card := _build_real_move_card(move_id, move_doc, true)
+		formal_card.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		formal_card.offset_left = 7.0
+		formal_card.offset_top = 7.0
+		formal_card.offset_right = -7.0
+		formal_card.offset_bottom = -7.0
+		check.add_child(formal_card)
+		move_checkboxes[move_id] = check
 	_update_selection_state()
 
 func _add_setup_effect_summary(card: VBoxContainer, move_id: String, move_doc: Dictionary) -> void:
-	var outcomes: Array = move_doc.get("outcome_rules", []) as Array
+	var outcomes := _move_outcome_rules(move_doc)
 	var move_effect := _move_effect_text(move_id, move_doc)
 	if not move_effect.is_empty():
 		var move_effect_label := Label.new()
@@ -481,7 +525,7 @@ func _add_setup_effect_summary(card: VBoxContainer, move_id: String, move_doc: D
 func _on_move_toggled(enabled: bool, move_id: String) -> void:
 	if enabled:
 		if selected_move_ids.size() >= MAX_MOVES:
-			(move_checkboxes[move_id] as CheckButton).set_pressed_no_signal(false); return
+			(move_checkboxes[move_id] as BaseButton).set_pressed_no_signal(false); return
 		selected_move_ids.append(move_id)
 	else: selected_move_ids.erase(move_id)
 	_update_selection_state()
@@ -797,15 +841,15 @@ func _build_real_move_card(move_id: String, move_doc: Dictionary, large: bool) -
 	_set_fractional_rect(sheen, Vector4(0.0,0.0,1.0,0.49))
 	root.add_child(sheen)
 
-	var attack_icon := _energy_icon(String(move_doc.get("attack_type","normal")), 70 if large else 42)
+	var attack_icon := _energy_icon(String(move_doc.get("attack_type","normal")), 70 if large else 50)
 	_set_fractional_rect(attack_icon, Vector4(0.025,0.05,0.145,0.34))
 	root.add_child(attack_icon)
 
-	_add_card_label(root, _pokemon_name(selected_pokemon), Vector4(0.16,0.035,0.68,0.17), 20 if large else 13, HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
-	_add_card_label(root, _move_name(move_doc), Vector4(0.14,0.15,0.80,0.43), 38 if large else 26, HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 5 if large else 3)
+	_add_card_label(root, _pokemon_name(selected_pokemon), Vector4(0.16,0.035,0.68,0.17), 20 if large else 16, HORIZONTAL_ALIGNMENT_LEFT, Color.WHITE, 2)
+	_add_card_label(root, _move_name(move_doc), Vector4(0.14,0.15,0.80,0.43), 38 if large else 30, HORIZONTAL_ALIGNMENT_CENTER, Color.WHITE, 5 if large else 3)
 	var printed_damage = move_doc.get("printed_damage", null)
 	var damage_value := _format_damage_value(printed_damage)
-	var damage_label := _add_card_label(root, damage_value, Vector4(0.79,0.11,0.98,0.44), 48 if large else 34, HORIZONTAL_ALIGNMENT_CENTER, Color(1.0,0.25,0.20), 5 if large else 3, Color.WHITE)
+	var damage_label := _add_card_label(root, damage_value, Vector4(0.79,0.11,0.98,0.44), 48 if large else 42, HORIZONTAL_ALIGNMENT_CENTER, Color(1.0,0.25,0.20), 5 if large else 4, Color.WHITE)
 	if printed_damage != null:
 		damage_label.add_theme_font_override("font", FONT_NINJA_ATTACK)
 	_add_card_energy_icons(root, move_doc, large)
@@ -835,11 +879,11 @@ func _add_card_energy_icons(parent: Control, move_doc: Dictionary, large: bool) 
 		var cost: Dictionary = raw as Dictionary
 		var count := maxi(0, int(cost.get("count",0)))
 		for _i in range(count):
-			costs.add_child(_energy_icon(String(cost.get("energy_type","normal")), 30 if large else 18))
+			costs.add_child(_energy_icon(String(cost.get("energy_type","normal")), 30 if large else 24))
 
 
 func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionary, large: bool) -> void:
-	var outcomes: Array = move_doc.get("outcome_rules",[]) as Array
+	var outcomes := _move_outcome_rules(move_doc)
 	var move_effect := _move_effect_text(move_id, move_doc)
 	if not move_effect.is_empty():
 		var strip := PanelContainer.new()
@@ -862,7 +906,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		move_effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		move_effect_label.max_lines_visible = 2
 		move_effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		move_effect_label.add_theme_font_size_override("font_size", 25 if large else 17)
+		move_effect_label.add_theme_font_size_override("font_size", 25 if large else 20)
 		var use_dark_text := energy_color.get_luminance() >= 0.46
 		var effect_font_color := Color("07131d") if use_dark_text else Color.WHITE
 		var effect_outline_color := Color(1.0,1.0,1.0,0.42) if use_dark_text else Color(0.0,0.0,0.0,0.94)
@@ -899,7 +943,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		var row := HBoxContainer.new()
 		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.custom_minimum_size.y = 32.0 if large else 20.0
+		row.custom_minimum_size.y = 32.0 if large else 24.0
 		row.add_theme_constant_override("separation", 9 if large else 5)
 		effects.add_child(row)
 
@@ -915,7 +959,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 			icons.add_theme_constant_override("v_separation", 2)
 			row.add_child(icons)
 			for raw_orientation in orientations.slice(0,6):
-				icons.add_child(_kyokoro_icon(String(raw_orientation), 32 if large else 20))
+				icons.add_child(_kyokoro_icon(String(raw_orientation), 32 if large else 24))
 
 		var line := Label.new()
 		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -926,7 +970,7 @@ func _add_card_effect_rows(parent: Control, move_id: String, move_doc: Dictionar
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		line.max_lines_visible = 4 if large else (3 if outcomes.size() <= 2 else 2)
 		line.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		line.add_theme_font_size_override("font_size", 25 if large else 17)
+		line.add_theme_font_size_override("font_size", 25 if large else 20)
 		line.add_theme_color_override("font_color", Color.WHITE)
 		line.add_theme_color_override("font_outline_color", Color(0.02,0.03,0.05,0.95))
 		line.add_theme_constant_override("outline_size", 2)
@@ -984,7 +1028,7 @@ func _open_move_popup(move_id: String) -> void:
 func _confirm_use_move(move_id: String) -> void:
 	if not move_docs.has(move_id) or phase != "player" or move_id == previous_move_id: return
 	var move_doc: Dictionary = move_docs[move_id]
-	var outcomes: Array = move_doc.get("outcome_rules",[]) as Array
+	var outcomes := _move_outcome_rules(move_doc)
 	if outcomes.is_empty():
 		_finalize_move_use(move_id, "", [])
 		return
@@ -1067,7 +1111,7 @@ func _on_kyokoro_choice(popup: PopupPanel, move_id: String, move_doc: Dictionary
 
 func _resolve_kyokoro_and_finalize(move_id: String, move_doc: Dictionary, orientation: String) -> void:
 	var matched: Array[Dictionary] = []
-	var outcomes: Array = move_doc.get("outcome_rules",[]) as Array
+	var outcomes := _move_outcome_rules(move_doc)
 	for i in outcomes.size():
 		var outcome: Dictionary = outcomes[i] as Dictionary
 		var condition: Dictionary = outcome.get("condition",{}) as Dictionary
@@ -1238,7 +1282,7 @@ func _adjust_hp(delta: int) -> void:
 
 func _extract_timed_reminders(move_id: String, move_doc: Dictionary, target_phase: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	var outcomes: Array = move_doc.get("outcome_rules",[]) as Array
+	var outcomes := _move_outcome_rules(move_doc)
 	for i in outcomes.size():
 		var outcome: Dictionary = outcomes[i] as Dictionary; var raw := String(outcome.get("raw_text","")).to_lower()
 		var is_opponent := _effect_targets_opponent_next_turn(raw)
@@ -1249,7 +1293,7 @@ func _extract_timed_reminders(move_id: String, move_doc: Dictionary, target_phas
 	return result
 
 func _has_timed_effect(move_doc: Dictionary) -> bool:
-	for raw in move_doc.get("outcome_rules",[]) as Array:
+	for raw in _move_outcome_rules(move_doc):
 		var text := String((raw as Dictionary).get("raw_text","")).to_lower()
 		if "next turn" in text and not "last turn" in text: return true
 	return false
