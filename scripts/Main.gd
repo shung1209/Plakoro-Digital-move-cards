@@ -370,6 +370,8 @@ func _clear_page() -> void:
 	hp_label = null
 	phase_label = null
 	reminder_box = null
+	selection_count_label = null
+	start_button = null
 
 func _header(subtitle: String) -> void:
 	var row := HBoxContainer.new(); row.add_theme_constant_override("separation", 16); page.add_child(row)
@@ -384,6 +386,7 @@ func _header(subtitle: String) -> void:
 		idx += 1
 	language_option.select(selected_idx); language_option.item_selected.connect(_on_language_selected); row.add_child(language_option)
 	var online_button := Button.new(); online_button.text = _online_button_text(); online_button.custom_minimum_size = Vector2(150,46); online_button.pressed.connect(_open_online_popup); row.add_child(online_button); online_status_buttons.append(online_button)
+	_update_online_button_availability(online_button)
 	page.add_child(HSeparator.new())
 
 func _show_setup_page() -> void:
@@ -670,18 +673,27 @@ func _on_move_toggled(enabled: bool, move_id: String) -> void:
 	if selected_moves_first: call_deferred("_rebuild_move_choices")
 
 func _update_selection_state() -> void:
-	if selection_count_label: selection_count_label.text = _tr_ui("selected_count", {"current":selected_move_ids.size(),"max":MAX_MOVES})
-	if start_button:
+	if is_instance_valid(selection_count_label) and not selection_count_label.is_queued_for_deletion():
+		selection_count_label.text = _tr_ui("selected_count", {"current":selected_move_ids.size(),"max":MAX_MOVES})
+	if is_instance_valid(start_button) and not start_button.is_queued_for_deletion():
 		var waiting_online := not OnlineRelay.room.is_empty() and not OnlineRelay.is_ready_for_moves()
-		var needs_initiative := OnlineRelay.is_ready_for_moves() and String(OnlineRelay.room.get("first_player_id", "")).is_empty()
+		var first_player_id := str(OnlineRelay.room.get("first_player_id", ""))
+		var needs_initiative := OnlineRelay.is_ready_for_moves() and first_player_id.is_empty()
 		start_button.disabled = selected_move_ids.size() != MAX_MOVES or waiting_online or needs_initiative or online_waiting_to_start
-		start_button.text = _tr_ui("waiting_ready") if online_waiting_to_start else (_tr_ui("online_waiting") if waiting_online else (_tr_ui("initiative_needed") if needs_initiative else (_tr_ui("ready_for_battle") if OnlineRelay.is_ready_for_moves() else _tr_ui("start_session"))))
+		var next_button_text := _tr_ui("start_session")
+		if OnlineRelay.is_ready_for_moves(): next_button_text = _tr_ui("ready_for_battle")
+		if needs_initiative: next_button_text = _tr_ui("initiative_needed")
+		if waiting_online: next_button_text = _tr_ui("online_waiting")
+		if online_waiting_to_start: next_button_text = _tr_ui("waiting_ready")
+		start_button.text = next_button_text
+	for online_button in online_status_buttons:
+		_update_online_button_availability(online_button)
 
 func _start_session() -> void:
-	if selected_move_ids.size() != MAX_MOVES or (not OnlineRelay.room.is_empty() and (not OnlineRelay.is_ready_for_moves() or String(OnlineRelay.room.get("first_player_id", "")).is_empty())): return
+	if selected_move_ids.size() != MAX_MOVES or (not OnlineRelay.room.is_empty() and (not OnlineRelay.is_ready_for_moves() or str(OnlineRelay.room.get("first_player_id", "")).is_empty())): return
 	if OnlineRelay.is_ready_for_moves():
 		online_waiting_to_start = true
-		OnlineRelay.set_battle_ready(true, {"pokemon_id":String(selected_pokemon.get("species_id", selected_pokemon.get("id", ""))), "move_ids":selected_move_ids.duplicate()})
+		OnlineRelay.set_battle_ready(true, {"pokemon_id":str(selected_pokemon.get("species_id", selected_pokemon.get("id", ""))), "move_ids":selected_move_ids.duplicate()})
 		_update_selection_state()
 		return
 	_begin_session()
@@ -692,7 +704,7 @@ func _begin_session() -> void:
 	current_hp = int(selected_pokemon.get("max_hp",0)); previous_move_id = ""; turn_number = 1
 	# Offline remains the original manual flow. In an online room the host opens
 	# the first turn and the joining phone waits for that confirmed move.
-	phase = "player" if not OnlineRelay.is_ready_for_moves() or OnlineRelay.player_id == String(OnlineRelay.room.get("first_player_id", "")) else "opponent"
+	phase = "player" if not OnlineRelay.is_ready_for_moves() or OnlineRelay.player_id == str(OnlineRelay.room.get("first_player_id", "")) else "opponent"
 	pending_opponent_reminders.clear(); pending_self_reminders.clear(); last_kyokoro_result = ""; last_resolved_effects.clear(); last_resolution_details.clear(); _show_play_page()
 
 
@@ -1508,13 +1520,31 @@ func _add_result_notice(parent: VBoxContainer, value: String, color: Color) -> v
 func _online_button_text() -> String:
 	if OnlineRelay.state == &"reconnecting": return _tr_ui("online_reconnecting")
 	if OnlineRelay.room.is_empty(): return _tr_ui("online")
-	var code := String(OnlineRelay.room.get("code", ""))
+	var code := str(OnlineRelay.room.get("code", ""))
 	if int(OnlineRelay.room.get("connected_count", OnlineRelay.room.get("player_count", 0))) < 2:
 		return _tr_ui("opponent_disconnected") if int(OnlineRelay.room.get("player_count", 0)) >= 2 else _tr_ui("online_waiting")
 	return _tr_ui("online_ready", {"code":code})
 
 
+func _update_online_button_availability(button: Button) -> void:
+	if not is_instance_valid(button) or button.is_queued_for_deletion(): return
+	var must_finish_deck := not showing_play_page and OnlineRelay.room.is_empty() and selected_move_ids.size() != MAX_MOVES
+	button.disabled = must_finish_deck
+	if not must_finish_deck:
+		button.tooltip_text = ""
+		return
+	match current_locale:
+		"zh_TW": button.tooltip_text = "請先選滿 4 張招式卡再進行連線。"
+		"ja_JP": button.tooltip_text = "接続する前にわざカードを4枚選んでください。"
+		"es_ES": button.tooltip_text = "Selecciona 4 cartas de movimiento antes de conectarte."
+		_: button.tooltip_text = "Select 4 move cards before connecting."
+
+
 func _open_online_popup() -> void:
+	# Build the local deck first. This keeps room setup short and prevents a
+	# connected player from making the opponent wait while still choosing cards.
+	if not showing_play_page and OnlineRelay.room.is_empty() and selected_move_ids.size() != MAX_MOVES:
+		return
 	var popup := PopupPanel.new()
 	popup.exclusive = true
 	popup.add_theme_stylebox_override("panel", _panel_style(Color("111821"), 14, Color("56728d"), 2))
@@ -1536,7 +1566,7 @@ func _open_online_popup() -> void:
 	var code_display := HBoxContainer.new(); code_display.alignment = BoxContainer.ALIGNMENT_CENTER; code_display.add_theme_constant_override("separation", 6); box.add_child(code_display)
 	var energy_palette := HBoxContainer.new(); energy_palette.alignment = BoxContainer.ALIGNMENT_CENTER; energy_palette.add_theme_constant_override("separation", 4); box.add_child(energy_palette)
 	for code in ONLINE_ENERGY_CODES:
-		var energy_button := Button.new(); energy_button.custom_minimum_size = Vector2(46,46); energy_button.icon = _energy_texture(String(ONLINE_ENERGY_CODES[code])); energy_button.expand_icon = true; energy_button.tooltip_text = String(ONLINE_ENERGY_CODES[code]).capitalize(); energy_button.pressed.connect(_append_online_energy_code.bind(code_edit, code_display, code)); energy_palette.add_child(energy_button)
+		var energy_button := Button.new(); energy_button.custom_minimum_size = Vector2(46,46); energy_button.icon = _energy_texture(str(ONLINE_ENERGY_CODES[code])); energy_button.expand_icon = true; energy_button.tooltip_text = str(ONLINE_ENERGY_CODES[code]).capitalize(); energy_button.pressed.connect(_append_online_energy_code.bind(code_edit, code_display, code)); energy_palette.add_child(energy_button)
 	var back_code := Button.new(); back_code.text = "⌫"; back_code.custom_minimum_size = Vector2(46,46); back_code.pressed.connect(_remove_online_energy_code.bind(code_edit, code_display)); energy_palette.add_child(back_code)
 	var clear_code := Button.new(); clear_code.text = "×"; clear_code.custom_minimum_size = Vector2(46,46); clear_code.pressed.connect(_clear_online_energy_code.bind(code_edit, code_display)); energy_palette.add_child(clear_code)
 	var status := Label.new(); status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; box.add_child(status)
@@ -1552,15 +1582,15 @@ func _open_online_popup() -> void:
 		server_edit.editable = not connected
 		create.disabled = not connected
 		join.disabled = not connected
-		var shown_code := String(OnlineRelay.room.get("code", "")) if not OnlineRelay.room.is_empty() else code_edit.text
+		var shown_code := str(OnlineRelay.room.get("code", "")) if not OnlineRelay.room.is_empty() else code_edit.text
 		_render_online_energy_code(code_display, shown_code)
 		energy_palette.visible = OnlineRelay.room.is_empty()
 		join.visible = OnlineRelay.room.is_empty()
 		create.visible = OnlineRelay.room.is_empty()
 		var ready := OnlineRelay.is_ready_for_moves()
-		coin.disabled = not ready or not String(OnlineRelay.room.get("first_player_id", "")).is_empty()
-		for child in rps_row.get_children(): (child as Button).disabled = not ready or not String(OnlineRelay.room.get("first_player_id", "")).is_empty()
-		status.text = _initiative_status_text() if ready else (_online_button_text() if connected else String(OnlineRelay.state).capitalize())
+		coin.disabled = not ready or not str(OnlineRelay.room.get("first_player_id", "")).is_empty()
+		for child in rps_row.get_children(): (child as Button).disabled = not ready or not str(OnlineRelay.room.get("first_player_id", "")).is_empty()
+		status.text = _initiative_status_text() if ready else (_online_button_text() if connected else str(OnlineRelay.state).capitalize())
 	refresh.call()
 	connect.pressed.connect(func():
 		if OnlineRelay.state == &"disconnected": OnlineRelay.connect_to_server(server_edit.text)
@@ -1576,8 +1606,8 @@ func _open_online_popup() -> void:
 	var state_callback := func(_state: StringName): refresh.call()
 	var room_callback := func(_room: Dictionary): refresh.call()
 	var initiative_callback := func(result: Dictionary):
-		if String(result.get("type", "")) == "initiative_tie": status.text = _tr_ui("initiative_tie")
-		elif String(result.get("type", "")) == "initiative_waiting": status.text = _tr_ui("initiative_waiting")
+		if str(result.get("type", "")) == "initiative_tie": status.text = _tr_ui("initiative_tie")
+		elif str(result.get("type", "")) == "initiative_waiting": status.text = _tr_ui("initiative_waiting")
 		else: refresh.call()
 	OnlineRelay.connection_changed.connect(state_callback)
 	OnlineRelay.room_changed.connect(room_callback)
@@ -1613,7 +1643,7 @@ func _render_online_energy_code(display: HBoxContainer, code: String) -> void:
 	for index in 6:
 		var slot := Button.new(); slot.custom_minimum_size = Vector2(52,52); slot.mouse_filter = Control.MOUSE_FILTER_IGNORE; slot.focus_mode = Control.FOCUS_NONE; slot.expand_icon = true
 		var character := code.substr(index, 1) if index < code.length() else ""
-		if ONLINE_ENERGY_CODES.has(character): slot.icon = _energy_texture(String(ONLINE_ENERGY_CODES[character]))
+		if ONLINE_ENERGY_CODES.has(character): slot.icon = _energy_texture(str(ONLINE_ENERGY_CODES[character]))
 		else: slot.text = str(index + 1); slot.modulate = Color(1,1,1,0.5)
 		display.add_child(slot)
 
@@ -1625,7 +1655,7 @@ func _publish_online_move(move_id: String, orientation: String, total_damage: Va
 		"protocol":1,
 		"sequence":online_sequence,
 		"move_id":move_id,
-		"pokemon_id":String(selected_pokemon.get("species_id", selected_pokemon.get("id", ""))),
+		"pokemon_id":str(selected_pokemon.get("species_id", selected_pokemon.get("id", ""))),
 		"orientation":orientation,
 		"move_failed":move_failed,
 		"total_damage":total_damage,
@@ -1634,7 +1664,7 @@ func _publish_online_move(move_id: String, orientation: String, total_damage: Va
 
 
 func _on_opponent_move_received(payload: Dictionary) -> void:
-	var move_id := String(payload.get("move_id", ""))
+	var move_id := str(payload.get("move_id", ""))
 	if not move_docs.has(move_id):
 		_on_online_error("Unknown opponent move: %s" % move_id)
 		return
@@ -1647,11 +1677,11 @@ func _on_opponent_move_received(payload: Dictionary) -> void:
 
 
 func _show_opponent_move_popup(payload: Dictionary) -> void:
-	var move_id := String(payload.get("move_id", ""))
+	var move_id := str(payload.get("move_id", ""))
 	if not move_docs.has(move_id): return
 	var move_doc: Dictionary = move_docs[move_id]
-	var pokemon_doc := _find_pokemon_by_species(String(payload.get("pokemon_id", "")))
-	var orientation := String(payload.get("orientation", ""))
+	var pokemon_doc := _find_pokemon_by_species(str(payload.get("pokemon_id", "")))
+	var orientation := str(payload.get("orientation", ""))
 	var move_failed := bool(payload.get("move_failed", false))
 	var matched := _matched_outcomes_for_orientation(move_doc, orientation) if not move_failed else [] as Array[Dictionary]
 	var effects: Array[String] = []
@@ -1705,7 +1735,15 @@ func _find_pokemon_by_species(species_id: String) -> Dictionary:
 
 
 func _on_online_error(message: String) -> void:
-	var dialog := AcceptDialog.new(); dialog.title = _tr_ui("online_title"); dialog.dialog_text = message; add_child(dialog); dialog.popup_hide.connect(func(): dialog.queue_free()); dialog.popup_centered(Vector2i(520, 180))
+	var dialog := AcceptDialog.new()
+	dialog.title = _tr_ui("online_title")
+	dialog.dialog_text = message
+	add_child(dialog)
+	# AcceptDialog exposes confirmed/canceled rather than PopupPanel.popup_hide.
+	# Queue the transient error window after either supported close action.
+	dialog.confirmed.connect(func(): dialog.queue_free())
+	dialog.canceled.connect(func(): dialog.queue_free())
+	dialog.popup_centered(Vector2i(520, 180))
 
 
 func _on_online_room_changed(_room: Dictionary) -> void:
@@ -1734,7 +1772,7 @@ func _on_online_battle_ready(_match: Dictionary) -> void:
 
 
 func _initiative_status_text() -> String:
-	var first_player := String(OnlineRelay.room.get("first_player_id", ""))
+	var first_player := str(OnlineRelay.room.get("first_player_id", ""))
 	if first_player.is_empty(): return _tr_ui("initiative_needed")
 	return _tr_ui("initiative_you_first") if first_player == OnlineRelay.player_id else _tr_ui("initiative_opponent_first")
 
@@ -1833,8 +1871,8 @@ func _orientation_suffix(reminder: Dictionary) -> String:
 	var text := PackedStringArray(); for item in values: text.append(_orientation_display_name(String(item)))
 	return "  [%s]" % ", ".join(text)
 
-func _energy_icon(type_id: String, size: int) -> TextureRect:
-	var icon := TextureRect.new(); icon.custom_minimum_size = Vector2(size,size); icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED; icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+func _energy_icon(type_id: String, icon_size: int) -> TextureRect:
+	var icon := TextureRect.new(); icon.custom_minimum_size = Vector2(icon_size,icon_size); icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED; icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.texture = _energy_texture(type_id)
 	icon.tooltip_text = _type_name(type_id); return icon
 
@@ -1843,13 +1881,13 @@ func _energy_texture(type_id: String) -> Texture2D:
 	if ResourceLoader.exists(path): return load(path) as Texture2D
 	return null
 
-func _add_energy_cost_icons(row: HBoxContainer, move_doc: Dictionary, size: int) -> void:
+func _add_energy_cost_icons(row: HBoxContainer, move_doc: Dictionary, icon_size: int) -> void:
 	var costs: Array = move_doc.get("energy_cost",[]) as Array
 	if costs.is_empty():
 		var none := Label.new(); none.text = _tr_ui("no_energy"); none.mouse_filter = Control.MOUSE_FILTER_IGNORE; row.add_child(none); return
 	for raw in costs:
 		var cost: Dictionary = raw as Dictionary; var type_id := String(cost.get("energy_type","")); var count := int(cost.get("count",0))
-		for i in count: row.add_child(_energy_icon(type_id,size))
+		for i in count: row.add_child(_energy_icon(type_id,icon_size))
 
 func _kyokoro_texture(orientation: String) -> Texture2D:
 	var file_name := orientation.to_lower() + ".webp"
@@ -1859,18 +1897,18 @@ func _kyokoro_texture(orientation: String) -> Texture2D:
 	return null
 
 
-func _kyokoro_button_texture(orientation: String, size: int) -> Texture2D:
+func _kyokoro_button_texture(orientation: String, icon_size: int) -> Texture2D:
 	var source := _kyokoro_texture(orientation)
 	if source == null: return null
 	var image := source.get_image()
 	if image == null or image.is_empty(): return source
-	image.resize(size, size, Image.INTERPOLATE_LANCZOS)
+	image.resize(icon_size, icon_size, Image.INTERPOLATE_LANCZOS)
 	return ImageTexture.create_from_image(image)
 
 
-func _kyokoro_icon(orientation: String, size: int) -> TextureRect:
+func _kyokoro_icon(orientation: String, icon_size: int) -> TextureRect:
 	var icon := TextureRect.new()
-	icon.custom_minimum_size = Vector2(size,size)
+	icon.custom_minimum_size = Vector2(icon_size,icon_size)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE

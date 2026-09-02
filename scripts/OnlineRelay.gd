@@ -31,7 +31,7 @@ func _ready() -> void:
 
 
 func default_server_url() -> String:
-	return String(ProjectSettings.get_setting(SERVER_SETTING, DEFAULT_SERVER_URL))
+	return str(ProjectSettings.get_setting(SERVER_SETTING, DEFAULT_SERVER_URL))
 
 
 func connect_to_server(url := "") -> Error:
@@ -102,7 +102,7 @@ func is_ready_for_moves() -> bool:
 
 
 func is_room_host() -> bool:
-	return not player_id.is_empty() and player_id == String(room.get("host_id", ""))
+	return not player_id.is_empty() and player_id == str(room.get("host_id", ""))
 
 
 func reset_move_history() -> void:
@@ -123,8 +123,8 @@ func _process(_delta: float) -> void:
 				last_heartbeat = now
 				_send({"type":"ping", "sent_at":now})
 		WebSocketPeer.STATE_CLOSED:
-			if not intentional_disconnect and not reconnect_token.is_empty() and not room.is_empty():
-				resume_token = reconnect_token
+			if not intentional_disconnect:
+				if not reconnect_token.is_empty() and not room.is_empty(): resume_token = reconnect_token
 				_schedule_reconnect_or_close(socket.get_close_reason())
 			else:
 				_clear_session(); set_process(false); _set_state(&"disconnected")
@@ -136,14 +136,14 @@ func _receive(packet: PackedByteArray) -> void:
 		online_error.emit("Invalid server message")
 		return
 	var message := parsed as Dictionary
-	match String(message.get("type", "")):
+	match str(message.get("type", "")):
 		"connected":
-			player_id = String(message.get("player_id", ""))
-			reconnect_token = String(message.get("reconnect_token", ""))
+			player_id = str(message.get("player_id", ""))
+			reconnect_token = str(message.get("reconnect_token", ""))
 			if not resume_token.is_empty(): _send({"type":"resume_session", "reconnect_token":resume_token})
 		"session_resumed":
-			player_id = String(message.get("player_id", ""))
-			reconnect_token = String(message.get("reconnect_token", resume_token))
+			player_id = str(message.get("player_id", ""))
+			reconnect_token = str(message.get("reconnect_token", resume_token))
 			resume_token = ""; reconnect_attempt = 0; _set_state(&"connected")
 		"room_joined", "room_updated":
 			room = Dictionary(message.get("room", {})).duplicate(true)
@@ -152,24 +152,24 @@ func _receive(packet: PackedByteArray) -> void:
 			room.clear(); room_changed.emit(room)
 		"opponent_move":
 			var payload := Dictionary(message.get("payload", {})).duplicate(true)
-			var sender_id := String(payload.get("sender_id", "opponent"))
+			var sender_id := str(payload.get("sender_id", "opponent"))
 			var sequence := int(payload.get("sequence", 0))
 			if sequence > int(received_sequences.get(sender_id, -1)):
 				received_sequences[sender_id] = sequence
 				opponent_move_received.emit(payload)
 		"initiative_result":
 			var result := Dictionary(message.get("result", {})).duplicate(true)
-			room["first_player_id"] = String(result.get("first_player_id", ""))
-			room["initiative_mode"] = String(result.get("mode", ""))
+			room["first_player_id"] = str(result.get("first_player_id", ""))
+			room["initiative_mode"] = str(result.get("mode", ""))
 			initiative_changed.emit(result)
 			room_changed.emit(room)
 		"initiative_waiting", "initiative_tie":
 			initiative_changed.emit(Dictionary(message).duplicate(true))
 		"battle_ready": battle_ready.emit(Dictionary(message.get("match", {})).duplicate(true))
 		"turn_changed":
-			room["current_turn_player_id"] = String(message.get("current_turn_player_id", ""))
+			room["current_turn_player_id"] = str(message.get("current_turn_player_id", ""))
 			room_changed.emit(room)
-		"error": online_error.emit(String(message.get("message", "Online error")))
+		"error": online_error.emit(str(message.get("message", "Online error")))
 
 
 func _send(message: Dictionary) -> void:
@@ -180,7 +180,10 @@ func _send(message: Dictionary) -> void:
 
 
 func _schedule_reconnect_or_close(reason: String) -> void:
-	if not intentional_disconnect and not resume_token.is_empty() and reconnect_attempt < RECONNECT_DELAYS.size():
+	# Render free services can briefly answer before the WebSocket route is
+	# ready while waking or deploying. Retry initial connections as well as
+	# interrupted room sessions instead of failing on the first HTTP response.
+	if not intentional_disconnect and reconnect_attempt < RECONNECT_DELAYS.size():
 		reconnect_at = Time.get_ticks_msec() + RECONNECT_DELAYS[reconnect_attempt]
 		reconnect_attempt += 1
 		_set_state(&"reconnecting")
